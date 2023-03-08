@@ -24,6 +24,6 @@ list(APPEND INCLUDE_DIR ${GLFW_DIR}/deps)
 list(APPEND LINK_LIBS glfw)
 
 list(APPEND MAIN_SOURCE ${GLAD_DIR}/src/gl.c src/main.cpp)
-add_executable(main ${MAIN_SOURCE})
+add_executable(main ${MAIN_SOURCE} src/Shader.h)
 target_include_directories(main PUBLIC ${INCLUDE_DIR})
 target_link_libraries(main PUBLIC ${LINK_LIBS})
