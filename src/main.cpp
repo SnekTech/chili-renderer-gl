@@ -36,7 +36,7 @@ int main()
 	// lock window size
 	glfwSetWindowSizeLimits(window, width, height, width, height);
 
-	Game theGame(window);
+	Game theGame;
 
     // render loop
     // -----------

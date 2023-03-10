@@ -38,6 +38,10 @@ public:
 	{
 		return{ (T2)x,(T2)y,(T2)z };
 	}
+	operator _Vec2<T>() const
+	{
+		return {x,y};
+	}
 	T		LenSq() const
 	{
 		return sq( *this );

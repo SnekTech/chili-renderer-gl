@@ -4,8 +4,8 @@
 
 #include "Game.h"
 
-Game::Game(GLFWwindow* window)
-	: window(window)
+Game::Game()
+	: cube(1.0f)
 {
 }
 
@@ -24,6 +24,15 @@ void Game::UpdateModel()
 
 void Game::ComposeFrame()
 {
-	gfx.PutPixel(200, 200, Colors::Yellow);
-	gfx.DrawLine(100, 100, 200, 300, Colors::Yellow);
+	auto lines = cube.GetLines();
+
+	for (auto& v : lines.vertices)
+	{
+		v += {0, 0, 1};
+		pst.Transform(v);
+	}
+	for (auto i = lines.indices.cbegin(); i != lines.indices.cend(); std::advance(i, 2))
+	{
+		gfx.DrawLine(lines.vertices[*i], lines.vertices[*std::next(i)], Colors::White);
+	}
 }

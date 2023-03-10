@@ -100,7 +100,7 @@ void Graphics::EndFrame()
 
 void Graphics::BeginFrame()
 {
-	frameBuffer.Clear(Colors::Magenta);
+	frameBuffer.Clear(Colors::Black);
 }
 
 void Graphics::DrawLine( float x1,float y1,float x2,float y2,Color c )
