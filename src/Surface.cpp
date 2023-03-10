@@ -4,7 +4,7 @@
 
 #include "Surface.h"
 
-void Surface::PutPixelAlpha( unsigned int x,unsigned int y,const Color& c )
+void Surface::PutPixelAlpha( unsigned int x,unsigned int y,const Color& color )
 {
     assert( x >= 0 );
     assert( y >= 0 );
@@ -14,9 +14,9 @@ void Surface::PutPixelAlpha( unsigned int x,unsigned int y,const Color& c )
     const Color d = GetPixel( x,y );
 
     // blend channels
-    const unsigned char resultRed = (c.GetR() * c.GetA() + d.GetR() * (255u - c.GetA())) / 256u;
-    const unsigned char resultGreen = (c.GetG() * c.GetA() + d.GetG() * (255u - c.GetA())) / 256u;
-    const unsigned char resultBlue = (c.GetB() * c.GetA() + d.GetB() * (255u - c.GetA())) / 256u;
+    const unsigned char resultRed = (color.GetR() * color.GetA() + d.GetR() * (255u - color.GetA())) / 256u;
+    const unsigned char resultGreen = (color.GetG() * color.GetA() + d.GetG() * (255u - color.GetA())) / 256u;
+    const unsigned char resultBlue = (color.GetB() * color.GetA() + d.GetB() * (255u - color.GetA())) / 256u;
 
     // pack channels back into pixel and fire pixel onto surface
     PutPixel( x,y,{resultRed, resultGreen, resultBlue } );

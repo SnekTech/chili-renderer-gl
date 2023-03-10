@@ -55,15 +55,15 @@ public:
         }
     }
 
-    void PutPixel( unsigned int x,unsigned int y,const Color& c )
+    void PutPixel( unsigned int x,unsigned int y,const Color& color )
     {
         assert( x >= 0 );
         assert( y >= 0 );
         assert( x < width );
         assert( y < height );
-        pBuffer[y * pitch + x] = c;
+        pBuffer[y * pitch + x] = color;
     }
-    void PutPixelAlpha( unsigned int x,unsigned int y,const Color& c );
+    void PutPixelAlpha( unsigned int x,unsigned int y,const Color& color );
     [[nodiscard]] Color GetPixel( unsigned int x,unsigned int y ) const
     {
         assert( x >= 0 );
