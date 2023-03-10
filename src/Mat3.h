@@ -7,34 +7,31 @@
 
 #include "Vec3.h"
 #include <string>
-#include <memory>
+#include <array>
 
 template <typename T>
 class Matrix3
 {
 private:
-	using MatElements = T[3][3];
+	using MatElements = std::array<std::array<T, 3>, 3>;
 public:
-	Matrix3(const MatElements& elements) : pElements(std::make_unique<MatElements>())
+	Matrix3(const MatElements& elements)
 	{
-		memcpy(pElements.get(), elements, sizeof(MatElements));
+		int i = 0;
+		for (auto& row : elements)
+		{
+			std::copy(row.begin(), row.end(), matRows[i].begin());
+			i++;
+		}
 	}
-	Matrix3(const Matrix3& other): pElements(other.pElements ? std::make_unique<MatElements>() : nullptr)
+	Matrix3(const Matrix3& other): Matrix3(other.matRows)
 	{
-		memcpy(pElements.get(), other.pElements.get(), sizeof(MatElements));
-//		for (int i = 0; i < 3; i++)
-//		{
-//			for (int j = 0; j < 3; j++)
-//			{
-//				(*pElements)[i][j] = (*other.pElements)[i][j];
-//			}
-//		}
 	}
 
 	void swap(Matrix3& rhs) noexcept
 	{
 		using std::swap;
-		swap(pElements, rhs.pElements);
+		swap(matRows, rhs.matRows);
 	}
 	Matrix3& operator=(Matrix3 rhs)
 	{
@@ -43,9 +40,9 @@ public:
 	}
 	Matrix3& operator*=(T rhs)
 	{
-		for (auto& row : *pElements)
+		for (auto& row : matRows)
 		{
-			for (T& e : row)
+			for (auto& e : row)
 			{
 				e *= rhs;
 			}
@@ -55,12 +52,12 @@ public:
 	Matrix3 operator*(T rhs) const
 	{
 		Matrix3 result = *this;
-		return result *= rhs;
+		result *= rhs;
+		return result;
 	}
 	Matrix3 operator*(const Matrix3& rhs) const
 	{
 		MatElements resultElements;
-		auto& otherElements = *rhs.pElements;
 
 		for (int i = 0; i < 3; i++)
 		{
@@ -69,7 +66,7 @@ public:
 				T sum = 0;
 				for (int k = 0; k < 3; k++)
 				{
-					sum += *pElements[i][k] * otherElements[k][j];
+					sum += matRows[i][k] * rhs.matRows[k][j];
 				}
 				resultElements[i][j] = sum;
 			}
@@ -93,7 +90,7 @@ public:
 		return Identity() * factor;
 	}
 public:
-	std::unique_ptr<MatElements> pElements;
+	MatElements matRows;
 };
 
 template<typename T>
@@ -105,12 +102,12 @@ _Vec3<T>& operator *= (_Vec3<T>& lhs, const Matrix3<T>& rhs)
 template<typename T>
 _Vec3<T> operator*(const _Vec3<T>& lhs, const Matrix3<T>& rhs)
 {
-	const auto& matrixElements = *rhs.pElements;
+	const auto& matrix = rhs.matRows;
 	return
 	{
-		lhs.x * matrixElements[0][0] + lhs.y * matrixElements[1][0] + lhs.z * matrixElements[2][0],
-		lhs.x * matrixElements[0][1] + lhs.y * matrixElements[1][1] + lhs.z * matrixElements[2][1],
-		lhs.x * matrixElements[0][2] + lhs.y * matrixElements[1][2] + lhs.z * matrixElements[2][2],
+		lhs.x * matrix[0][0] + lhs.y * matrix[1][0] + lhs.z * matrix[2][0],
+		lhs.x * matrix[0][1] + lhs.y * matrix[1][1] + lhs.z * matrix[2][1],
+		lhs.x * matrix[0][2] + lhs.y * matrix[1][2] + lhs.z * matrix[2][2],
 	};
 }
 
