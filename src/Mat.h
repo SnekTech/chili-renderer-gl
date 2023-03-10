@@ -10,6 +10,7 @@
 #include <stdexcept>
 
 #include "Vec3.h"
+#include "Vec4.h"
 
 template <typename T, unsigned int Size>
 class Matrix
@@ -17,7 +18,7 @@ class Matrix
 private:
 	using MatElements = std::array<std::array<T, Size>, Size>;
 public:
-	Matrix(const MatElements& elements)
+	explicit Matrix(const MatElements& elements)
 	{
 		int i = 0;
 		for (auto& row : elements)
@@ -130,14 +131,14 @@ public:
 	MatElements Elements;
 };
 
-template<typename T, unsigned int Size>
-_Vec3<T>& operator *= (_Vec3<T>& lhs, const Matrix<T, Size>& rhs)
+template<typename T>
+_Vec3<T>& operator *= (_Vec3<T>& lhs, const Matrix<T, 3>& rhs)
 {
 	return lhs = lhs * rhs;
 }
 
-template<typename T, unsigned int Size>
-_Vec3<T> operator*(const _Vec3<T>& lhs, const Matrix<T, Size>& rhs)
+template<typename T>
+_Vec3<T> operator*(const _Vec3<T>& lhs, const Matrix<T, 3>& rhs)
 {
 	const auto& matrix = rhs.Elements;
 	return
@@ -148,8 +149,33 @@ _Vec3<T> operator*(const _Vec3<T>& lhs, const Matrix<T, Size>& rhs)
 	};
 }
 
+template<typename T>
+_Vec3<T>& operator *= (_Vec4<T>& lhs, const Matrix<T, 4>& rhs)
+{
+	return lhs = lhs * rhs;
+}
+
+template<typename T>
+_Vec3<T> operator*(const _Vec4<T>& lhs, const Matrix<T, 4>& rhs)
+{
+	const auto& matrix = rhs.Elements;
+	return
+		{
+			lhs.x * matrix[0][0] + lhs.y * matrix[1][0] + lhs.z * matrix[2][0] + lhs.w * matrix[3][0],
+			lhs.x * matrix[0][1] + lhs.y * matrix[1][1] + lhs.z * matrix[2][1] + lhs.w * matrix[3][1],
+			lhs.x * matrix[0][2] + lhs.y * matrix[1][2] + lhs.z * matrix[2][2] + lhs.w * matrix[3][2],
+			lhs.x * matrix[0][3] + lhs.y * matrix[1][3] + lhs.z * matrix[2][3] + lhs.w * matrix[3][3],
+		};
+}
+
+using Mat2 = Matrix<float, 2>;
+using Mad2 = Matrix<double, 2>;
+
 using Mat3 = Matrix<float, 3>;
 using Mad3 = Matrix<double, 3>;
+
+using Mat4 = Matrix<float, 4>;
+using Mad4 = Matrix<double, 4>;
 
 
 #endif //CHILI_RENDERER_GL_MAT_H
