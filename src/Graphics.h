@@ -5,6 +5,8 @@
 #ifndef CHILI_RENDERER_GL_GRAPHICS_H
 #define CHILI_RENDERER_GL_GRAPHICS_H
 
+#include <GLFW/glfw3.h>
+
 #include "Surface.h"
 
 class Graphics {
@@ -31,6 +33,7 @@ public:
 	~Graphics();
 
 private:
+	unsigned int VBO, VAO, EBO;
     Surface frameBuffer;
 public:
     static constexpr unsigned int ScreenWidth = 640u;

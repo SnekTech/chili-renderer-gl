@@ -5,10 +5,11 @@
 #ifndef CHILI_RENDERER_GL_SURFACE_H
 #define CHILI_RENDERER_GL_SURFACE_H
 
-#include "Colors.h"
 #include <string>
 #include <memory>
-#include <assert.h>
+#include <cassert>
+
+#include "Colors.h"
 
 class Surface
 {
@@ -45,7 +46,6 @@ public:
     ~Surface() = default;
     void Clear( const Color& fillValue  )
     {
-//        wmemset(reinterpret_cast<wchar_t *>(pBuffer.get()), fillValue.dword, pitch * height * sizeof( Color ) );
         for (auto y = 0; y < height; y++)
         {
             for (auto x = 0; x < pitch; x++)
