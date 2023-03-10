@@ -27,6 +27,9 @@ private:
 	GLFWwindow* window;
 	Graphics gfx;
     FrameTimer frameTimer;
+
+	// user variables live here
+
 };
 
 #endif //CHILI_RENDERER_GL_GAME_H
