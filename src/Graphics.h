@@ -22,6 +22,8 @@ public:
 	Graphics& operator=(const Graphics&) = delete;
 	void EndFrame();
 	void BeginFrame();
+	~Graphics();
+
 	void PutPixel(int x, int y, int r, int g, int b)
 	{
 		PutPixel(x, y, {(unsigned char)r, (unsigned char) g, (unsigned char) b});
@@ -30,7 +32,11 @@ public:
 	{
 		frameBuffer.PutPixel(x, y, color);
 	}
-	~Graphics();
+	void DrawLine(const Vec2& p1, const Vec2& p2, Color color)
+	{
+		DrawLine(p1.x, p1.y, p2.x, p2.y, color);
+	}
+	void DrawLine(float x1, float y1, float x2, float y2, Color color);
 
 private:
 	unsigned int VBO, VAO, EBO;

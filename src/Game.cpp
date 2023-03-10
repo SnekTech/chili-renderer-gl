@@ -25,4 +25,5 @@ void Game::UpdateModel()
 void Game::ComposeFrame()
 {
 	gfx.PutPixel(200, 200, Colors::Yellow);
+	gfx.DrawLine(100, 100, 200, 300, Colors::Yellow);
 }
