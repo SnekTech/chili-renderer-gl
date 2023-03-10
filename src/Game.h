@@ -7,8 +7,8 @@
 
 #include <GLFW/glfw3.h>
 
-#include "FrameTimer.h"
-#include "Graphics.h"
+#include "Widgets/FrameTimer.h"
+#include "HardwareRender/Graphics.h"
 
 class Game
 {

@@ -1,10 +1,8 @@
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
-
 #include <iostream>
 
-#include "Shader.h"
-#include "Surface.h"
+#include "Widgets/Shader.h"
 #include "Game.h"
 
 void framebuffer_size_callback([[maybe_unused]] GLFWwindow* window, int width, int height);

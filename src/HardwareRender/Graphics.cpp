@@ -2,11 +2,11 @@
 // Created by syf on 2023/3/9.
 //
 
-#include <glad/gl.h>
+#include "glad/gl.h"
 #include <iostream>
 
 #include "Graphics.h"
-#include "Shader.h"
+#include "../Widgets/Shader.h"
 
 Graphics::Graphics()
 	:

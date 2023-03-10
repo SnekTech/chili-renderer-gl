@@ -5,7 +5,7 @@
 #ifndef CHILI_RENDERER_GL_GRAPHICS_H
 #define CHILI_RENDERER_GL_GRAPHICS_H
 
-#include <GLFW/glfw3.h>
+#include "GLFW/glfw3.h"
 
 #include "Surface.h"
 

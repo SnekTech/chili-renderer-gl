@@ -20,7 +20,7 @@
 ******************************************************************************************/
 #pragma once
 
-#include "ChiliMath.h"
+#include "../Widgets/ChiliMath.h"
 
 template <typename T>
 class _Vec2

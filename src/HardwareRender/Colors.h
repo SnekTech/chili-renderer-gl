@@ -5,7 +5,7 @@
 #ifndef CHILI_RENDERER_GL_COLORS_H
 #define CHILI_RENDERER_GL_COLORS_H
 
-#include "Vec3.h"
+#include "../DataStructures/Vec3.h"
 
 class Color
 {

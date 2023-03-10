@@ -21,7 +21,7 @@
 #pragma once
 
 #include <algorithm>
-#include "ChiliMath.h"
+#include "../Widgets/ChiliMath.h"
 #include "Vec2.h"
 
 template <typename T>
