@@ -40,8 +40,9 @@ void Game::UpdateModel()
     // reset
     if (controller.IsPressed(Button::BumperRight))
     {
-        theta_x = lerp(theta_x, 0.0f, 0.3f);
-        theta_y = lerp(theta_y, 0.0f, 0.3f);
+        theta_x = lerp(theta_x, 0.0f, LerpAlpha);
+        theta_y = lerp(theta_y, 0.0f, LerpAlpha);
+        offset_z = lerp(offset_z, 2.0f, LerpAlpha);
     }
 }
 

@@ -31,9 +31,10 @@ private:
 	// user variables live here
 	PreClipScreenTransformer pst;
     Widgets::Controller controller;
+    const float deltaTime = 1 / 60.0f;
+    const float LerpAlpha = 0.5;
     Cube cube;
     float theta_x = 0, theta_y = 0;
-    const float deltaTime = 1 / 60.0f;
     float offset_z = 2;
 };
 
