@@ -43,7 +43,7 @@ private:
     Surface frameBuffer;
 public:
     static constexpr unsigned int ScreenWidth = 640u;
-    static constexpr unsigned int ScreenHeight = 480u;
+    static constexpr unsigned int ScreenHeight = 640u;
 };
 
 

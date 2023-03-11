@@ -57,6 +57,10 @@ public:
 		Matrix result = *this;
 		return result *= rhs;
 	}
+	Matrix& operator*=(const Matrix& rhs)
+	{
+		return *this = *this * rhs;
+	}
 	Matrix operator*(const Matrix& rhs) const
 	{
 		MatElements resultElements;
@@ -127,6 +131,92 @@ public:
 	{
 		return Identity() * factor;
 	}
+	static Matrix RotationZ(T theta)
+	{
+		const T sinTheta = sin(theta);
+		const T cosTheta = cos(theta);
+
+		if (Size == 3)
+		{
+			MatElements raw =
+			{
+				cosTheta, sinTheta, 0,
+				-sinTheta, cosTheta, 0,
+				0, 0, 1
+			};
+			return Matrix(raw);
+		}
+		if (Size == 4)
+		{
+			MatElements  raw = {
+				cosTheta, sinTheta, 0, 0,
+               -sinTheta, sinTheta, 0, 0,
+				0, 			0, 		1, 0,
+				0, 			0, 		0, 1
+			};
+            return raw;
+		}
+
+        throw std::runtime_error("bad matrix dimensionality");
+	}
+    static Matrix RotationY(T theta)
+    {
+        const T sinTheta = sin(theta);
+        const T cosTheta = cos(theta);
+
+        if (Size == 3)
+        {
+            MatElements raw =
+                {
+                    cosTheta, 0, -sinTheta,
+                    0,        1, 0,
+                    sinTheta, 0, cosTheta
+                };
+            return Matrix(raw);
+        }
+        if (Size == 4)
+        {
+            MatElements  raw =
+                {
+                    cosTheta, 0, -sinTheta, 0,
+                    0,        1, 0,         0,
+                    sinTheta, 0, cosTheta,  0,
+                    0,        0, 0,         0
+                };
+            return raw;
+        }
+
+        throw std::runtime_error("bad matrix dimensionality");
+    }
+    static Matrix RotationX(T theta)
+    {
+        const T sinTheta = sin(theta);
+        const T cosTheta = cos(theta);
+
+        if (Size == 3)
+        {
+            MatElements raw =
+            {
+                1, 0,           0,
+                0, cosTheta, sinTheta,
+                0, -sinTheta, cosTheta,
+            };
+            return Matrix(raw);
+        }
+        if (Size == 4)
+        {
+            MatElements  raw =
+            {
+                1, 0,        0,         0,
+                0, cosTheta, sinTheta,  0,
+                0, -sinTheta, cosTheta, 0,
+                0, 0,        0,         1
+            };
+            return raw;
+        }
+
+        throw std::runtime_error("bad matrix dimensionality");
+    }
 public:
 	MatElements Elements;
 };

@@ -14,13 +14,11 @@ namespace Widgets {
 	public:
 		CppFeatureTester()
 		{
-			auto pMatrix = std::make_unique<int[]>(9);
-			pMatrix[3] = 42;
-			log(pMatrix[3]);
+			l0g("testing cpp features...");
 		}
 	private:
 		template<typename T>
-		void log(const T& value)
+		void l0g(const T& value)
 		{
 			std::cout << value << std::endl;
 		}
