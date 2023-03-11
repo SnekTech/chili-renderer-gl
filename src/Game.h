@@ -6,6 +6,7 @@
 #define CHILI_RENDERER_GL_GAME_H
 
 #include "Widgets/FrameTimer.h"
+#include "Widgets/Controller.h"
 #include "HardwareRender/Graphics.h"
 #include "PreClipScreenTransformer.h"
 #include "Shapes/Cube.h"
@@ -29,7 +30,7 @@ private:
 
 	// user variables live here
 	PreClipScreenTransformer pst;
-    GLFWgamepadstate controller{};
+    Widgets::Controller controller;
     Cube cube;
     float theta_x = 0, theta_y = 0;
     const float speed = 0.02f;

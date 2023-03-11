@@ -2,12 +2,14 @@
 // Created by syf on 2023/3/10.
 //
 
+#include <iostream>
+
 #include "Game.h"
 #include "DataStructures/Mat.h"
 
 
 Game::Game()
-    : cube(1)
+    : controller(GLFW_JOYSTICK_1), cube(1)
 {
 
 }
@@ -15,6 +17,8 @@ Game::Game()
 void Game::Go()
 {
 	gfx.BeginFrame();
+
+    controller.UpdateState();
 	UpdateModel();
 	ComposeFrame();
 	gfx.EndFrame();
@@ -22,13 +26,10 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-    if (glfwGetGamepadState(GLFW_JOYSTICK_1, &controller))
-    {
-        float xAxis = controller.axes[GLFW_GAMEPAD_AXIS_LEFT_X];
-        float yAxis = controller.axes[GLFW_GAMEPAD_AXIS_LEFT_Y];
-        theta_x += yAxis * speed;
-        theta_y += xAxis * speed;
-    }
+    auto leftAxis = controller.LeftAxis();
+    leftAxis *= speed;
+    theta_x += leftAxis.y;
+    theta_y += leftAxis.x;
 }
 
 void Game::ComposeFrame()
