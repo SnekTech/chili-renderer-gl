@@ -5,17 +5,11 @@
 #include "Game.h"
 #include "DataStructures/Mat.h"
 
-#define Testing 0
-#if Testing
-#include "Widgets/CppFeatureTester.h"
-#endif
 
 Game::Game()
     : cube(1)
 {
-#if Testing
-	Widgets::CppFeatureTester tester;
-#endif
+
 }
 
 void Game::Go()
