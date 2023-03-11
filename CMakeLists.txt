@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 project(chili-renderer-gl LANGUAGES C CXX)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # glad
@@ -25,6 +25,6 @@ list(APPEND INCLUDE_DIR src)
 list(APPEND LINK_LIBS glfw)
 
 list(APPEND MAIN_SOURCE ${GLAD_DIR}/src/gl.c src/main.cpp)
-add_executable(main ${MAIN_SOURCE} src/Widgets/Shader.h src/HardwareRender/Surface.cpp src/HardwareRender/Surface.h src/HardwareRender/Colors.h src/HardwareRender/Graphics.cpp src/HardwareRender/Graphics.h src/Game.cpp src/Game.h src/Widgets/FrameTimer.cpp src/Widgets/FrameTimer.h src/DataStructures/Mat.h src/PreClipScreenTransformer.h src/IndexedLineList.h src/Shapes/Cube.h src/Widgets/Controller.h)
+add_executable(main ${MAIN_SOURCE} src/Widgets/Shader.h src/HardwareRender/Surface.cpp src/HardwareRender/Surface.h src/HardwareRender/Colors.h src/HardwareRender/Graphics.cpp src/HardwareRender/Graphics.h src/Game.cpp src/Game.h src/Widgets/FrameTimer.cpp src/Widgets/FrameTimer.h src/DataStructures/Mat.h src/PreClipScreenTransformer.h src/IndexedLineList.h src/Shapes/Cube.h src/Widgets/Controller.h src/Widgets/Controller.cpp)
 target_include_directories(main PUBLIC ${INCLUDE_DIR})
 target_link_libraries(main PUBLIC ${LINK_LIBS})

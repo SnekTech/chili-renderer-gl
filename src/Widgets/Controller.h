@@ -7,6 +7,7 @@
 
 #include <GLFW/glfw3.h>
 #include <string>
+#include <iostream>
 
 #include "DataStructures/Vec2.h"
 
@@ -15,11 +16,20 @@ namespace Widgets
     class Controller
     {
     public:
+        enum Button
+        {
+            A,
+            B,
+            X,
+            Y,
+        };
+    public:
         explicit Controller(int joystickId)
             :
             id(joystickId),
             name(glfwGetGamepadName(joystickId))
         {
+            std::cout << "Controller discovered: " << name << std::endl;
         }
         Controller(const Controller& rhs) = delete;
         Controller& operator=(const Controller& rhs) = delete;
@@ -28,6 +38,8 @@ namespace Widgets
         {
             glfwGetGamepadState(id, &state);
         }
+
+        [[nodiscard]] bool IsPressed(Button button) const;
 
         [[nodiscard]]
         Vec2 LeftAxis() const

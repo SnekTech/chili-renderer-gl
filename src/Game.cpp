@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <cmath>
 
 #include "Game.h"
 #include "DataStructures/Mat.h"
@@ -30,6 +31,14 @@ void Game::UpdateModel()
     leftAxis *= speed;
     theta_x += leftAxis.y;
     theta_y += leftAxis.x;
+
+    using Button = Widgets::Controller::Button;
+    if (controller.IsPressed(Button::A))
+    {
+        using std::lerp;
+        theta_x = lerp(theta_x, 0, 0.3f);
+        theta_y = lerp(theta_y, 0, 0.3f);
+    }
 }
 
 void Game::ComposeFrame()
