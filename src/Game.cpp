@@ -4,9 +4,17 @@
 
 #include "Game.h"
 
+#define Testing 0
+#if Testing
+#include "Widgets/CppFeatureTester.h"
+#endif
+
 Game::Game()
 	: cube(1.0f)
 {
+#if Testing
+	Widgets::CppFeatureTester tester;
+#endif
 }
 
 void Game::Go()
