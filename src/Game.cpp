@@ -3,10 +3,10 @@
 //
 
 #include <iostream>
-#include <cmath>
 
 #include "Game.h"
 #include "DataStructures/Mat.h"
+#include "Widgets/ChiliMath.h"
 
 
 Game::Game()
@@ -29,15 +29,14 @@ void Game::UpdateModel()
 {
     auto leftAxis = controller.LeftAxis();
     leftAxis *= speed;
-    theta_x += leftAxis.y;
-    theta_y += leftAxis.x;
+    theta_x = wrap_angle(theta_x + leftAxis.y);
+    theta_y = wrap_angle(theta_y + leftAxis.x);
 
     using Button = Widgets::Controller::Button;
     if (controller.IsPressed(Button::A))
     {
-        using std::lerp;
-        theta_x = lerp(theta_x, 0, 0.3f);
-        theta_y = lerp(theta_y, 0, 0.3f);
+        theta_x = lerp(theta_x, 0.0f, 0.3f);
+        theta_y = lerp(theta_y, 0.0f, 0.3f);
     }
 }
 

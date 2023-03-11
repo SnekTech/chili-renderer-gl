@@ -20,7 +20,7 @@
 ******************************************************************************************/
 #pragma once
 
-#include <math.h>
+#include <cmath>
 
 constexpr float PI = 3.14159265f;
 constexpr double PI_D = 3.1415926535897932;
@@ -41,7 +41,7 @@ T wrap_angle( T theta )
 }
 
 template<typename T>
-constexpr T interpolate( const T& src,const T& dst,float alpha )
+constexpr T lerp( const T& src,const T& dst,float alpha )
 {
 	return src + (dst - src) * alpha;
 }
