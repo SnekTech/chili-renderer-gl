@@ -96,36 +96,36 @@ public:
 	{
 		MatElements identity;
 
-		switch (Size)
+		if constexpr(Size == 2)
 		{
-		case 2:
 			identity = {
 				1, 0,
 				0, 1
 			};
-			break;
-		case 3:
-			identity =
-			{
-				1, 0, 0,
-				0, 1, 0,
-				0, 0, 1
-			};
-			break;
-		case 4:
-			identity = {
-				1, 0, 0, 0,
-				0, 1, 0, 0,
-				0, 0, 1, 0,
-				0, 0, 0, 1
-			};
-			break;
-		default:
-			throw std::runtime_error("bad matrix dimensionality");
-		}
+            return Matrix(identity);
+        }
+        if constexpr (Size == 3)
+        {
+            identity =
+                {
+                    1.0f, 0.0, 0.0,
+                    0.0f, 1.0f, 0.0f,
+                    0.0f, 0.0f, 1.0f
+                };
+            return Matrix(identity);
+        }
+        if constexpr (Size == 4)
+        {
+            identity = {
+                1, 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1
+            };
+            return Matrix(identity);
+        }
 
-
-		return Matrix(identity);
+        throw std::runtime_error("bad matrix dimensionality");
 	}
 	static Matrix Scaling(T factor)
 	{
@@ -136,7 +136,7 @@ public:
 		const T sinTheta = sin(theta);
 		const T cosTheta = cos(theta);
 
-		if (Size == 3)
+		if constexpr (Size == 3)
 		{
 			MatElements raw =
 			{
@@ -146,7 +146,7 @@ public:
 			};
 			return Matrix(raw);
 		}
-		if (Size == 4)
+		if constexpr (Size == 4)
 		{
 			MatElements  raw = {
 				cosTheta, sinTheta, 0, 0,
@@ -164,7 +164,7 @@ public:
         const T sinTheta = sin(theta);
         const T cosTheta = cos(theta);
 
-        if (Size == 3)
+        if constexpr (Size == 3)
         {
             MatElements raw =
                 {
@@ -174,7 +174,7 @@ public:
                 };
             return Matrix(raw);
         }
-        if (Size == 4)
+        if constexpr (Size == 4)
         {
             MatElements  raw =
                 {
@@ -193,7 +193,7 @@ public:
         const T sinTheta = sin(theta);
         const T cosTheta = cos(theta);
 
-        if (Size == 3)
+        if constexpr (Size == 3)
         {
             MatElements raw =
             {
@@ -203,16 +203,16 @@ public:
             };
             return Matrix(raw);
         }
-        if (Size == 4)
+        if constexpr (Size == 4)
         {
-            MatElements  raw =
+            MatElements raw =
             {
                 1, 0,        0,         0,
                 0, cosTheta, sinTheta,  0,
                 0, -sinTheta, cosTheta, 0,
                 0, 0,        0,         1
             };
-            return raw;
+            return Matrix(raw);
         }
 
         throw std::runtime_error("bad matrix dimensionality");

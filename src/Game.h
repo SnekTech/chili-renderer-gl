@@ -29,7 +29,10 @@ private:
 
 	// user variables live here
 	PreClipScreenTransformer pst;
-	Cube cube;
+    GLFWgamepadstate controller{};
+    Cube cube;
+    float theta_x = 0, theta_y = 0;
+    const float speed = 0.02f;
 };
 
 #endif //CHILI_RENDERER_GL_GAME_H
