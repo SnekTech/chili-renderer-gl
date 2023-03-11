@@ -38,7 +38,7 @@ void Game::UpdateModel()
     offset_z += movement.y;
 
     // reset
-    if (controller.IsPressed(Button::ShoulderRight))
+    if (controller.IsPressed(Button::BumperRight))
     {
         theta_x = lerp(theta_x, 0.0f, 0.3f);
         theta_y = lerp(theta_y, 0.0f, 0.3f);

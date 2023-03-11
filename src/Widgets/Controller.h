@@ -26,8 +26,8 @@ namespace Widgets
             Down,
             Left,
             Right,
-            ShoulderRight,
-            ShoulderLeft,
+            BumperRight,
+            BumperLeft,
         };
     public:
         explicit Controller(int joystickId)
