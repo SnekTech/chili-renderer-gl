@@ -8,6 +8,7 @@
 #include "DataStructures/Mat.h"
 #include "Widgets/ChiliMath.h"
 
+using Button = Widgets::Controller::Button;
 
 Game::Game()
     : controller(GLFW_JOYSTICK_1), cube(1)
@@ -27,13 +28,17 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-    auto leftAxis = controller.LeftAxis();
-    leftAxis *= speed;
-    theta_x = wrap_angle(theta_x + leftAxis.y);
-    theta_y = wrap_angle(theta_y + leftAxis.x);
+    // rotation
+    auto rotation = controller.RightAxis() * deltaTime;
+    theta_x = wrap_angle(theta_x + rotation.y);
+    theta_y = wrap_angle(theta_y + rotation.x);
 
-    using Button = Widgets::Controller::Button;
-    if (controller.IsPressed(Button::A))
+    // movement
+    auto movement = controller.LeftAxis() * deltaTime;
+    offset_z += movement.y;
+
+    // reset
+    if (controller.IsPressed(Button::ShoulderRight))
     {
         theta_x = lerp(theta_x, 0.0f, 0.3f);
         theta_y = lerp(theta_y, 0.0f, 0.3f);
@@ -50,7 +55,7 @@ void Game::ComposeFrame()
 	for (auto& v : lines.vertices)
 	{
         v *= rot;
-		v += {0, 0, 1};
+		v += {0, 0, offset_z};
 		pst.Transform(v);
 	}
 	for (auto i = lines.indices.cbegin(); i != lines.indices.cend(); std::advance(i, 2))

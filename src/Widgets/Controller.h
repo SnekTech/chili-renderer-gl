@@ -22,6 +22,12 @@ namespace Widgets
             B,
             X,
             Y,
+            Up,
+            Down,
+            Left,
+            Right,
+            ShoulderRight,
+            ShoulderLeft,
         };
     public:
         explicit Controller(int joystickId)
@@ -40,13 +46,8 @@ namespace Widgets
         }
 
         [[nodiscard]] bool IsPressed(Button button) const;
-
-        [[nodiscard]]
-        Vec2 LeftAxis() const
-        {
-            const auto& axes = state.axes;
-            return {axes[GLFW_GAMEPAD_AXIS_LEFT_X], axes[GLFW_GAMEPAD_AXIS_LEFT_Y]};
-        }
+        [[nodiscard]] Vec2 LeftAxis() const;
+        [[nodiscard]] Vec2 RightAxis() const;
     public:
         int id;
         GLFWgamepadstate state{};

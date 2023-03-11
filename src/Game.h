@@ -33,7 +33,8 @@ private:
     Widgets::Controller controller;
     Cube cube;
     float theta_x = 0, theta_y = 0;
-    const float speed = 1 / 60.0f;
+    const float deltaTime = 1 / 60.0f;
+    float offset_z = 2;
 };
 
 #endif //CHILI_RENDERER_GL_GAME_H
