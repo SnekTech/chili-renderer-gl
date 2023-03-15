@@ -24,6 +24,7 @@ public:
 	void BeginFrame();
 	~Graphics();
 
+    void DrawTriangle(Vec2 v0, Vec2 v1, Vec2 v2, Color color);
 	void PutPixel(int x, int y, int r, int g, int b)
 	{
 		PutPixel(x, y, {(unsigned char)r, (unsigned char) g, (unsigned char) b});
@@ -38,6 +39,9 @@ public:
 	}
 	void DrawLine(float x1, float y1, float x2, float y2, Color color);
 
+private:
+    void DrawFlagTopTriangle(Vec2 v0, Vec2 v1, Vec2 v2, Color color);
+    void DrawFlagBottomTriangle(Vec2 v0, Vec2 v1, Vec2 v2, Color color);
 private:
 	unsigned int VBO, VAO, EBO;
     Surface frameBuffer;
