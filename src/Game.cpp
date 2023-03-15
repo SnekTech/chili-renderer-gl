@@ -27,19 +27,25 @@ void Game::Go()
 void Game::UpdateModel()
 {
     // rotation
-    auto rotation = controller.RightAxis() * deltaTime;
-    theta_x = wrap_angle(theta_x + rotation.y);
-    theta_y = wrap_angle(theta_y + rotation.x);
+    auto rotationXY = controller.RightAxis() * deltaTime;
+    auto rotationZ = 0.0f;
+    rotationZ += (float)controller.IsPressed(Button::BumperLeft) * 1 * deltaTime;
+    rotationZ += (float)controller.IsPressed(Button::BumperRight) * -1 * deltaTime;
+
+    theta_x = wrap_angle(theta_x + rotationXY.y);
+    theta_y = wrap_angle(theta_y + rotationXY.x);
+    theta_z = wrap_angle(theta_z + rotationZ);
 
     // movement
     auto movement = controller.LeftAxis() * deltaTime;
     offset_z += movement.y;
 
     // reset
-    if (controller.IsPressed(Button::BumperRight))
+    if (controller.IsPressed(Button::RightThumb))
     {
         theta_x = lerp(theta_x, 0.0f, LerpAlpha);
         theta_y = lerp(theta_y, 0.0f, LerpAlpha);
+        theta_z = lerp(theta_z, 0.0f, LerpAlpha);
         offset_z = lerp(offset_z, 2.0f, LerpAlpha);
     }
 }
@@ -62,7 +68,8 @@ void Game::ComposeFrame()
     };
 
     Mat3 rot = Mat3::RotationX(theta_x) *
-               Mat3::RotationY(theta_y);
+               Mat3::RotationY(theta_y) *
+               Mat3::RotationZ(theta_z);
 
     auto triangles = cube.GetTriangles();
 

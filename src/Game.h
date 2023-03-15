@@ -34,7 +34,7 @@ private:
     const float deltaTime = 1 / 60.0f;
     const float LerpAlpha = 0.5;
     Cube cube;
-    float theta_x = 0, theta_y = 0;
+    float theta_x = 0, theta_y = 0, theta_z = 0;
     float offset_z = 2;
 };
 

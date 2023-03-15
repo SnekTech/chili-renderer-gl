@@ -28,6 +28,10 @@ namespace Widgets
             Right,
             BumperRight,
             BumperLeft,
+            View,
+            Menu,
+            LeftThumb,
+            RightThumb
         };
     public:
         explicit Controller(int joystickId)
