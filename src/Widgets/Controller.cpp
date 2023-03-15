@@ -28,11 +28,11 @@ bool Widgets::Controller::IsPressed(Widgets::Controller::Button button) const
 Vec2 Widgets::Controller::LeftAxis() const
 {
     const auto& axes = state.axes;
-    return {axes[GLFW_GAMEPAD_AXIS_LEFT_X], axes[GLFW_GAMEPAD_AXIS_LEFT_Y]};
+    return -Vec2( axes[GLFW_GAMEPAD_AXIS_LEFT_X], axes[GLFW_GAMEPAD_AXIS_LEFT_Y] );
 }
 
 Vec2 Widgets::Controller::RightAxis() const
 {
     const auto& axes = state.axes;
-    return {axes[GLFW_GAMEPAD_AXIS_RIGHT_X], axes[GLFW_GAMEPAD_AXIS_RIGHT_Y]};
+    return -Vec2( axes[GLFW_GAMEPAD_AXIS_RIGHT_X], axes[GLFW_GAMEPAD_AXIS_RIGHT_Y] );
 }
