@@ -93,6 +93,13 @@ public:
 	{
 		return x * rhs.x + y * rhs.y + z * rhs.z;
 	}
+    _Vec3 Cross(const _Vec3<T> &rhs) const
+    {
+        return _Vec3(
+            y * rhs.z - z * rhs.y,
+            z * rhs.x - x * rhs.z,
+            x * rhs.y - y * rhs.x );
+    }
 	_Vec3	operator+( const _Vec3 &rhs ) const
 	{
 		return _Vec3( *this ) += rhs;

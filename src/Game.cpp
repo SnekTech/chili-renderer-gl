@@ -61,26 +61,47 @@ void Game::ComposeFrame()
         Colors::Cyan
     };
 
-    Mat3 rot = Mat3::RotationX(theta_x)
-               * Mat3::RotationY(theta_y);
+    Mat3 rot = Mat3::RotationX(theta_x) *
+               Mat3::RotationY(theta_y);
 
     auto triangles = cube.GetTriangles();
 
+    // model space --> world(/view) space
     for (auto& v: triangles.vertices)
     {
         v *= rot;
         v += { 0, 0, offset_z };
+    }
+
+    const auto& vertices = triangles.vertices;
+    const auto& indices = triangles.indices;
+
+    // backface culling
+    for (int i = 0; i < triangles.indices.size(); i += 3)
+    {
+        const auto v0 = vertices[indices[i]];
+        const auto v1 = vertices[indices[i + 1]];
+        const auto v2 = vertices[indices[i + 2]];
+
+        triangles.cullFlags[i / 3] = (v1 - v0).Cross(v2 - v0) * v0 >= 0.0f;
+    }
+
+    // world space --> screen space
+    for (auto& v: triangles.vertices)
+    {
         pst.Transform(v);
     }
-    for (auto i = triangles.indices.cbegin(); i != triangles.indices.cend(); std::advance(i, 3))
+
+    for (int i = 0; i < indices.size(); i += 3)
     {
-        using std::next;
+        int triangleIndex = i / 3;
+        // skip culled triangle
+        if (triangles.cullFlags[triangleIndex]) continue;
 
-        Vec2 v0 = triangles.vertices[*i];
-        Vec2 v1 = triangles.vertices[*next(i)];
-        Vec2 v2 = triangles.vertices[*next(i, 2)];
+        const auto v0 = vertices[indices[i]];
+        const auto v1 = vertices[indices[i + 1]];
+        const auto v2 = vertices[indices[i + 2]];
 
-        unsigned int colorIndex = std::distance(triangles.indices.cbegin(), i) / 3;
-        gfx.DrawTriangle(v0, v1, v2, colors[colorIndex]);
+        gfx.DrawTriangle(v0, v1, v2, colors[triangleIndex]);
     }
 }
