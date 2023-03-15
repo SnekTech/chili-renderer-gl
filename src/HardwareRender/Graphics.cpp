@@ -111,8 +111,10 @@ void Graphics::DrawLine( float x1,float y1,float x2,float y2,Color c )
 	if( dy == 0.0f && dx == 0.0f )
 	{
 		PutPixel( int( x1 ),int( y1 ),c );
+        return;
 	}
-	else if( abs( dy ) > abs( dx ) )
+
+	if( abs( dy ) > abs( dx ) )
 	{
 		if( dy < 0.0f )
 		{
