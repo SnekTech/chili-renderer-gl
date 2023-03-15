@@ -2,8 +2,6 @@
 // Created by syf on 2023/3/10.
 //
 
-#include <iostream>
-
 #include "Game.h"
 #include "DataStructures/Mat.h"
 #include "Widgets/ChiliMath.h"
@@ -51,16 +49,20 @@ void Game::ComposeFrame()
     Mat3 rot = Mat3::RotationX(theta_x)
         * Mat3::RotationY(theta_y);
 
-	auto lines = cube.GetLines();
+    auto triangles = cube.GetTriangles();
 
-	for (auto& v : lines.vertices)
+	for (auto& v : triangles.vertices)
 	{
         v *= rot;
 		v += {0, 0, offset_z};
 		pst.Transform(v);
 	}
-	for (auto i = lines.indices.cbegin(); i != lines.indices.cend(); std::advance(i, 2))
+	for (auto i = triangles.indices.cbegin(); i != triangles.indices.cend(); std::advance(i, 3))
 	{
-		gfx.DrawLine(lines.vertices[*i], lines.vertices[*std::next(i)], Colors::White);
+        using std::next;
+        Vec2 v0 = triangles.vertices[*i];
+        Vec2 v1 = triangles.vertices[*next(i)];
+        Vec2 v2 = triangles.vertices[*next(i, 2)];
+        gfx.DrawTriangle(v0, v1, v2, Colors::White);
 	}
 }
