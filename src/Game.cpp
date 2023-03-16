@@ -3,22 +3,21 @@
 //
 
 #include "Game.h"
-#include "DataStructures/Mat.h"
 #include "Widgets/ChiliMath.h"
+#include "Scenes/SolidCubeScene.h"
 
 using Button = Widgets::Controller::Button;
 
-Game::Game()
-    : controller(GLFW_JOYSTICK_1), cube(1)
+Game::Game() : controller(GLFW_JOYSTICK_1)
 {
+    scenes.push_back(std::make_unique<SolidCubeScene>(controller));
 
+    currentScene = scenes.begin();
 }
 
 void Game::Go()
 {
     gfx.BeginFrame();
-
-    controller.UpdateState();
     UpdateModel();
     ComposeFrame();
     gfx.EndFrame();
@@ -26,89 +25,42 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-    // rotation
-    auto rotationXY = controller.RightAxis() * deltaTime;
-    auto rotationZ = 0.0f;
-    rotationZ += (float)controller.IsPressed(Button::BumperLeft) * 1 * deltaTime;
-    rotationZ += (float)controller.IsPressed(Button::BumperRight) * -1 * deltaTime;
+    const float dt = 1.0f / 60.0f;
+    controller.UpdateState();
 
-    theta_x = wrap_angle(theta_x + rotationXY.y);
-    theta_y = wrap_angle(theta_y + rotationXY.x);
-    theta_z = wrap_angle(theta_z + rotationZ);
-
-    // movement
-    auto movement = controller.LeftAxis() * deltaTime;
-    offset_z += movement.y;
-
-    // reset
-    if (controller.IsPressed(Button::RightThumb))
+    if (controller.IsPressed(Button::Right))
     {
-        theta_x = lerp(theta_x, 0.0f, LerpAlpha);
-        theta_y = lerp(theta_y, 0.0f, LerpAlpha);
-        theta_z = lerp(theta_z, 0.0f, LerpAlpha);
-        offset_z = lerp(offset_z, 2.0f, LerpAlpha);
+        CycleScenes();
     }
+    else if (controller.IsPressed(Button::Left))
+    {
+        CycleScenes(true);
+    }
+
+    (*currentScene)->Update(dt);
 }
 
 void Game::ComposeFrame()
 {
-    const Color colors[12] = {
-        Colors::White,
-        Colors::Blue,
-        Colors::Cyan,
-        Colors::Gray,
-        Colors::Green,
-        Colors::Magenta,
-        Colors::LightGray,
-        Colors::Red,
-        Colors::Yellow,
-        Colors::White,
-        Colors::Blue,
-        Colors::Cyan
-    };
+    (*currentScene)->Draw(gfx);
+}
 
-    Mat3 rot = Mat3::RotationX(theta_x) *
-               Mat3::RotationY(theta_y) *
-               Mat3::RotationZ(theta_z);
-
-    auto triangles = cube.GetTriangles();
-
-    // model space --> world(/view) space
-    for (auto& v: triangles.vertices)
+void Game::CycleScenes(bool backwards)
+{
+    if (!backwards)
     {
-        v *= rot;
-        v += { 0, 0, offset_z };
+        currentScene++;
+        if (currentScene == scenes.end())
+        {
+            currentScene = scenes.begin();
+        }
+        return;
     }
 
-    const auto& vertices = triangles.vertices;
-    const auto& indices = triangles.indices;
-
-    // backface culling
-    for (int i = 0; i < triangles.indices.size(); i += 3)
+    if (currentScene == scenes.begin())
     {
-        const auto v0 = vertices[indices[i]];
-        const auto v1 = vertices[indices[i + 1]];
-        const auto v2 = vertices[indices[i + 2]];
-
-        triangles.cullFlags[i / 3] = (v1 - v0).Cross(v2 - v0) * v0 >= 0.0f;
+        currentScene = scenes.end() - 1;
+        return;
     }
-
-    // world space --> screen space
-    for (auto& v: triangles.vertices)
-    {
-        pst.Transform(v);
-    }
-
-    for (int i = 0; i < indices.size(); i += 3)
-    {
-        int triangleIndex = i / 3;
-        // skip culled triangle
-        if (triangles.cullFlags[triangleIndex]) continue;
-
-        const auto v0 = vertices[indices[i]];
-        const auto v1 = vertices[indices[i + 1]];
-        const auto v2 = vertices[indices[i + 2]];
-
-        gfx.DrawTriangle(v0, v1, v2, colors[triangleIndex]);
-    }
+    currentScene--;
 }

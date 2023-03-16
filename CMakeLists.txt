@@ -25,6 +25,6 @@ list(APPEND INCLUDE_DIR src)
 list(APPEND LINK_LIBS glfw)
 
 list(APPEND MAIN_SOURCE ${GLAD_DIR}/src/gl.c src/main.cpp)
-add_executable(main ${MAIN_SOURCE} src/Widgets/Shader.h src/HardwareRender/Surface.cpp src/HardwareRender/Surface.h src/HardwareRender/Colors.h src/HardwareRender/Graphics.cpp src/HardwareRender/Graphics.h src/Game.cpp src/Game.h src/Widgets/FrameTimer.cpp src/Widgets/FrameTimer.h src/DataStructures/Mat.h src/PreClipScreenTransformer.h src/DataStructures/IndexedList.h src/Shapes/Cube.h src/Widgets/Controller.h src/Widgets/Controller.cpp)
+add_executable(main ${MAIN_SOURCE} src/Widgets/Shader.h src/HardwareRender/Surface.cpp src/HardwareRender/Surface.h src/HardwareRender/Colors.h src/HardwareRender/Graphics.cpp src/HardwareRender/Graphics.h src/Game.cpp src/Game.h src/Widgets/FrameTimer.cpp src/Widgets/FrameTimer.h src/DataStructures/Mat.h src/PreClipScreenTransformer.h src/DataStructures/IndexedList.h src/Shapes/Cube.h src/Widgets/Controller.h src/Widgets/Controller.cpp src/Scenes/Scene.h src/Scenes/SolidCubeScene.h)
 target_include_directories(main PUBLIC ${INCLUDE_DIR})
 target_link_libraries(main PUBLIC ${LINK_LIBS})

@@ -5,11 +5,15 @@
 #ifndef CHILI_RENDERER_GL_GAME_H
 #define CHILI_RENDERER_GL_GAME_H
 
+#include <vector>
+#include <memory>
+
 #include "Widgets/FrameTimer.h"
 #include "Widgets/Controller.h"
 #include "HardwareRender/Graphics.h"
 #include "PreClipScreenTransformer.h"
 #include "Shapes/Cube.h"
+#include "Scenes/Scene.h"
 
 class Game
 {
@@ -23,19 +27,16 @@ private:
     void UpdateModel();
 
     // user functions live here
+    void CycleScenes(bool backwards = true);
 
 private:
 	Graphics gfx;
+    Widgets::Controller controller;
     FrameTimer frameTimer;
 
 	// user variables live here
-	PreClipScreenTransformer pst;
-    Widgets::Controller controller;
-    const float deltaTime = 1 / 60.0f;
-    const float LerpAlpha = 0.5;
-    Cube cube;
-    float theta_x = 0, theta_y = 0, theta_z = 0;
-    float offset_z = 2;
+    std::vector<std::unique_ptr<Scene>> scenes;
+    std::vector<std::unique_ptr<Scene>>::iterator currentScene;
 };
 
 #endif //CHILI_RENDERER_GL_GAME_H
