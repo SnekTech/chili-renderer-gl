@@ -11,12 +11,9 @@
 class Scene
 {
 public:
-    explicit Scene(const Widgets::Controller& controller) : controller(controller) {}
-    virtual void Update(float deltaTime) = 0;
+    virtual void Update(const Widgets::Controller& controller, float deltaTime) = 0;
     virtual void Draw(Graphics& gfx) const = 0;
     virtual ~Scene() = default;
-protected:
-    const Widgets::Controller& controller;
 };
 
 #endif //CHILI_RENDERER_GL_SCENE_H

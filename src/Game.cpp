@@ -5,12 +5,14 @@
 #include "Game.h"
 #include "Widgets/ChiliMath.h"
 #include "Scenes/SolidCubeScene.h"
+#include "Scenes/CubeOrderScene.h"
 
 using Button = Widgets::Controller::Button;
 
 Game::Game() : controller(GLFW_JOYSTICK_1)
 {
-    scenes.push_back(std::make_unique<SolidCubeScene>(controller));
+    scenes.push_back(std::make_unique<SolidCubeScene>());
+    scenes.push_back(std::make_unique<CubeOrderScene>());
 
     currentScene = scenes.begin();
 }
@@ -37,7 +39,7 @@ void Game::UpdateModel()
         CycleScenes(true);
     }
 
-    (*currentScene)->Update(dt);
+    (*currentScene)->Update(controller, dt);
 }
 
 void Game::ComposeFrame()

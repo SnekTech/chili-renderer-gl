@@ -14,10 +14,7 @@
 class SolidCubeScene : public Scene
 {
 public:
-    explicit SolidCubeScene(const Widgets::Controller& controller) : Scene(controller),
-        cube(1) {}
-
-    void Update(float deltaTime) override
+    void Update(const Widgets::Controller& controller, float deltaTime) override
     {
         using Button = Widgets::Controller::Button;
 
@@ -110,7 +107,7 @@ private:
         Colors::Cyan
     };
     const float LerpAlpha = 0.5;
-    Cube cube;
+    Cube cube = Cube(1.0f);
     float theta_x = 0, theta_y = 0, theta_z = 0;
     static constexpr float dTheta = PI;
 
