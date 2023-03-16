@@ -203,8 +203,8 @@ void Graphics::DrawTriangle(Vec2 v0, Vec2 v1, Vec2 v2, Color color)
 void Graphics::DrawFlagTopTriangle(Vec2 v0, Vec2 v1, Vec2 v2, Color color)
 {
     // calculate slopes
-    float m0 = (v1.x - v0.x) / (v1.y - v0.y);
-    float m1 = (v2.x - v0.x) / (v2.y - v0.y);
+    const float m0 = (v1.x - v0.x) / (v1.y - v0.y);
+    const float m1 = (v2.x - v0.x) / (v2.y - v0.y);
 
     // calculate start & end line
     // applying the 'bottom' rule
