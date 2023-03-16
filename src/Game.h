@@ -18,7 +18,7 @@
 class Game
 {
 public:
-	Game(GLFWwindow* window);
+	Game();
     Game(const Game& ) = delete;
     Game& operator=(const Game&) = delete;
     void Go();
@@ -29,7 +29,6 @@ private:
     // user functions live here
 
     void CycleScenes(bool backwards = true);
-    void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 private:
 	Graphics gfx;

@@ -6,14 +6,18 @@
 #include "Widgets/ChiliMath.h"
 #include "Scenes/SolidCubeScene.h"
 #include "Scenes/CubeOrderScene.h"
+#include "Scenes/ConHexScene.h"
+#include "Scenes/ConHexWireScene.h"
 
 using Button = Widgets::Controller::Button;
 
 
-Game::Game(GLFWwindow* window) : controller(GLFW_JOYSTICK_1)
+Game::Game() : controller(GLFW_JOYSTICK_1)
 {
     scenes.push_back(std::make_unique<SolidCubeScene>());
     scenes.push_back(std::make_unique<CubeOrderScene>());
+    scenes.push_back(std::make_unique<ConHexScene>());
+    scenes.push_back(std::make_unique<ConHexWireScene>());
 
     currentScene = scenes.begin();
 }
