@@ -26,6 +26,18 @@ static const std::map<Button, uint8_t> buttonToGlfwId = {
 
 bool Widgets::Controller::IsPressed(Widgets::Controller::Button button) const
 {
+    if (button == Any)
+    {
+        for (unsigned char btn : state.buttons) {
+            if (btn == GLFW_PRESS)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     auto index = buttonToGlfwId.at(button);
     return state.buttons[index] == GLFW_PRESS;
 }
@@ -40,4 +52,10 @@ Vec2 Widgets::Controller::RightAxis() const
 {
     const auto& axes = state.axes;
     return -Vec2(axes[GLFW_GAMEPAD_AXIS_RIGHT_X], axes[GLFW_GAMEPAD_AXIS_RIGHT_Y]);
+}
+
+bool Widgets::Controller::IsReleased(Button button) const
+{
+    auto index = buttonToGlfwId.at(button);
+    return state.buttons[index] == GLFW_RELEASE;
 }

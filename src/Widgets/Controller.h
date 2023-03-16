@@ -31,7 +31,8 @@ namespace Widgets
             View,
             Menu,
             LeftThumb,
-            RightThumb
+            RightThumb,
+            Any
         };
     public:
         explicit Controller(int joystickId)
@@ -48,8 +49,13 @@ namespace Widgets
         {
             glfwGetGamepadState(id, &state);
         }
+        void ClearState()
+        {
+            state = GLFWgamepadstate{};
+        }
 
         [[nodiscard]] bool IsPressed(Button button) const;
+        [[nodiscard]] bool IsReleased(Button button) const;
         [[nodiscard]] Vec2 LeftAxis() const;
         [[nodiscard]] Vec2 RightAxis() const;
     public:

@@ -5,7 +5,6 @@
 #include "Widgets/Shader.h"
 #include "Game.h"
 
-void framebuffer_size_callback([[maybe_unused]] GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 
 int main()
@@ -36,7 +35,7 @@ int main()
 	// lock window size
 	glfwSetWindowSizeLimits(window, width, height, width, height);
 
-	Game theGame;
+	Game theGame(window);
 
     // render loop
     // -----------

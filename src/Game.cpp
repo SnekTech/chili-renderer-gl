@@ -9,7 +9,8 @@
 
 using Button = Widgets::Controller::Button;
 
-Game::Game() : controller(GLFW_JOYSTICK_1)
+
+Game::Game(GLFWwindow* window) : controller(GLFW_JOYSTICK_1)
 {
     scenes.push_back(std::make_unique<SolidCubeScene>());
     scenes.push_back(std::make_unique<CubeOrderScene>());
@@ -30,13 +31,17 @@ void Game::UpdateModel()
     const float dt = 1.0f / 60.0f;
     controller.UpdateState();
 
-    if (controller.IsPressed(Button::Right))
+    if (!isSwitchingScene)
     {
-        CycleScenes();
+        if (controller.IsPressed(Button::Right))
+        {
+            isSwitchingScene = true;
+            CycleScenes();
+        }
     }
-    else if (controller.IsPressed(Button::Left))
+    if (controller.IsReleased(Button::Right))
     {
-        CycleScenes(true);
+        isSwitchingScene = false;
     }
 
     (*currentScene)->Update(controller, dt);

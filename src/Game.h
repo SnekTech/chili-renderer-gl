@@ -18,7 +18,7 @@
 class Game
 {
 public:
-	Game();
+	Game(GLFWwindow* window);
     Game(const Game& ) = delete;
     Game& operator=(const Game&) = delete;
     void Go();
@@ -27,12 +27,15 @@ private:
     void UpdateModel();
 
     // user functions live here
+
     void CycleScenes(bool backwards = true);
+    void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 private:
 	Graphics gfx;
     Widgets::Controller controller;
     FrameTimer frameTimer;
+    bool isSwitchingScene = false;
 
 	// user variables live here
     std::vector<std::unique_ptr<Scene>> scenes;
