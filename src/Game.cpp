@@ -8,6 +8,7 @@
 #include "Scenes/CubeOrderScene.h"
 #include "Scenes/ConHexScene.h"
 #include "Scenes/ConHexWireScene.h"
+#include "Scenes/XMutualScene.h"
 
 using Button = Widgets::Controller::Button;
 
@@ -18,6 +19,7 @@ Game::Game() : controller(GLFW_JOYSTICK_1)
     scenes.push_back(std::make_unique<CubeOrderScene>());
     scenes.push_back(std::make_unique<ConHexScene>());
     scenes.push_back(std::make_unique<ConHexWireScene>());
+    scenes.push_back(std::make_unique<XMutualScene>());
 
     currentScene = scenes.begin();
 }
