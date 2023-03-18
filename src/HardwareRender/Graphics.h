@@ -8,6 +8,8 @@
 #include "GLFW/glfw3.h"
 
 #include "Surface.h"
+#include "DataStructures/Vec2.h"
+#include "DataStructures/TexVertex.h"
 
 class Graphics {
 private:
@@ -25,6 +27,7 @@ public:
 	~Graphics();
 
     void DrawTriangle(Vec2 v0, Vec2 v1, Vec2 v2, Color color);
+    void DrawTriangleTex(const TexVertex& v0, const TexVertex& v1, const TexVertex& v2, const Surface& tex);
 	void PutPixel(int x, int y, int r, int g, int b)
 	{
 		PutPixel(x, y, {(unsigned char)r, (unsigned char) g, (unsigned char) b});
@@ -40,8 +43,10 @@ public:
 	void DrawLine(float x1, float y1, float x2, float y2, Color color);
 
 private:
-    void DrawFlagTopTriangle(Vec2 v0, Vec2 v1, Vec2 v2, Color color);
-    void DrawFlagBottomTriangle(Vec2 v0, Vec2 v1, Vec2 v2, Color color);
+    void DrawFlatTopTriangle(Vec2 v0, Vec2 v1, Vec2 v2, Color color);
+    void DrawFlatBottomTriangle(Vec2 v0, Vec2 v1, Vec2 v2, Color color);
+    void DrawFlatTopTriangleTex(const TexVertex& v0, const TexVertex& v1, const TexVertex& v2, const Surface& tex);
+    void DrawFlatBottomTriangleTex(const TexVertex& v0, const TexVertex& v1, const TexVertex& v2, const Surface& tex);
 private:
 	unsigned int VBO, VAO, EBO;
     Surface frameBuffer;

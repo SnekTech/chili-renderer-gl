@@ -28,7 +28,7 @@ public:
 			}
 		};
 	}
-	[[nodiscard]] IndexedTriangleList GetTriangles() const
+	[[nodiscard]] IndexedTriangleList<Vec3> GetTriangles() const
 	{
 		return{
 			vertices,{

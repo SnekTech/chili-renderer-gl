@@ -15,9 +15,10 @@ struct IndexedLineList
 	std::vector<unsigned int> indices;
 };
 
+template <typename T>
 struct IndexedTriangleList
 {
-    IndexedTriangleList(std::vector<Vec3> verticesIn, std::vector<size_t> indicesIn)
+    IndexedTriangleList(std::vector<T> verticesIn, std::vector<size_t> indicesIn)
         : vertices(std::move(verticesIn)), indices(std::move(indicesIn))
         {
             assert(vertices.size() > 2);
@@ -25,7 +26,7 @@ struct IndexedTriangleList
             cullFlags.resize(indices.size() / 3, false);
         }
 
-    std::vector<Vec3> vertices;
+    std::vector<T> vertices;
     std::vector<size_t> indices;
     std::vector<bool> cullFlags;
 };

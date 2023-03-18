@@ -92,6 +92,7 @@ public:
     {
         return pBuffer.get();
     }
+    static Surface FromFile(const std::string& name);
     void Copy( const Surface& src );
 private:
     // calculate pixel pitch required for given byte alignment (must be multiple of 4 bytes)

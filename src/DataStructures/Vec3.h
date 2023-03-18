@@ -143,7 +143,7 @@ public:
 	}
 	bool	operator!=( const _Vec3 &rhs ) const
 	{
-		return !(*this == rhs);
+        return !operator==(rhs);
 	}
 	// clamp to between 0.0 ~ 1.0
 	_Vec3&	Saturate()
@@ -175,6 +175,10 @@ public:
 		temp.Hadamard( rhs );
 		return temp;
 	}
+    _Vec3 InterpolateTo(const _Vec3& dest, float alpha) const
+    {
+        return *this + (dest - *this) * alpha;
+    }
 public:
     T x;
     T y;

@@ -170,14 +170,14 @@ void Graphics::DrawTriangle(Vec2 v0, Vec2 v1, Vec2 v2, Color color)
     if (v0.y == v1.y) // natural flat bottom
     {
         if (v1.x < v0.x) swap(v0, v1);
-        DrawFlagBottomTriangle(v0, v1, v2, color);
+        DrawFlatBottomTriangle(v0, v1, v2, color);
         return;
     }
 
     if (v1.y == v2.y) // natural flat top
     {
         if (v2.x < v1.x) swap(v1, v2);
-        DrawFlagTopTriangle(v0, v1, v2, color);
+        DrawFlatTopTriangle(v0, v1, v2, color);
         return;
     }
 
@@ -189,18 +189,59 @@ void Graphics::DrawTriangle(Vec2 v0, Vec2 v1, Vec2 v2, Color color)
 
     if (v1.x < vi.x) // major right
     {
-        DrawFlagTopTriangle(v0, v1, vi, color);
-        DrawFlagBottomTriangle(v1, vi, v2, color);
+        DrawFlatTopTriangle(v0, v1, vi, color);
+        DrawFlatBottomTriangle(v1, vi, v2, color);
     }
     else // major left
     {
-        DrawFlagTopTriangle(v0, vi, v1, color);
-        DrawFlagBottomTriangle(vi, v1, v2, color);
+        DrawFlatTopTriangle(v0, vi, v1, color);
+        DrawFlatBottomTriangle(vi, v1, v2, color);
     }
 
 }
 
-void Graphics::DrawFlagTopTriangle(Vec2 v0, Vec2 v1, Vec2 v2, Color color)
+void Graphics::DrawTriangleTex(const TexVertex& v0, const TexVertex& v1, const TexVertex& v2, const Surface& tex)
+{
+    auto pv0 = &v0;
+    auto pv1 = &v1;
+    auto pv2 = &v2;
+    using std::swap;
+
+    if (pv1->pos.y < pv0->pos.y) swap(pv0, pv1);
+    if (pv2->pos.y < pv1->pos.y) swap(pv1, pv2);
+    if (pv1->pos.y < pv0->pos.y) swap(pv0, pv1);
+
+    if (pv0->pos.y == pv1->pos.y) // natural flat bottom
+    {
+        if (pv1->pos.x < pv0->pos.x) swap(pv0, pv1);
+        DrawFlatBottomTriangleTex(*pv0, *pv1, *pv2, tex);
+        return;
+    }
+
+    if (pv1->pos.y == pv2->pos.y) // natural flag top
+    {
+        if (pv2->pos.x < pv1->pos.x) swap(pv1, pv2);
+        DrawFlatTopTriangleTex(*pv0, *pv1, *pv2, tex);
+        return;
+    }
+
+    const float alphaSplit = ((pv1->pos.y - pv0->pos.y) / (pv2->pos.y - pv0->pos.y));
+    TexVertex vi = pv0->InterpolateTo(*pv2, alphaSplit);
+
+    if (pv1->pos.x < vi.pos.x) // major right
+    {
+        DrawFlatTopTriangleTex(*pv0, *pv1, vi, tex);
+        DrawFlatBottomTriangleTex(*pv1, vi, *pv2, tex);
+    }
+    else // major left
+    {
+        DrawFlatTopTriangleTex(*pv0, vi, *pv1, tex);
+        DrawFlatBottomTriangleTex(vi, *pv1, *pv2, tex);
+    }
+
+}
+
+void Graphics::DrawFlatTopTriangle(Vec2 v0, Vec2 v1, Vec2 v2, Color color)
 {
     // calculate slopes
     const float m0 = (v1.x - v0.x) / (v1.y - v0.y);
@@ -214,7 +255,7 @@ void Graphics::DrawFlagTopTriangle(Vec2 v0, Vec2 v1, Vec2 v2, Color color)
     for (int y = yStart; y < yEnd; y++)
     {
         // calculate scanline range in float
-        const float pixelY = (float) y + 0.5f;
+        const float pixelY = (float)y + 0.5f;
         const float px0 = m0 * (pixelY - v0.y) + v0.x;
         const float px1 = m1 * (pixelY - v0.y) + v0.x;
 
@@ -229,7 +270,7 @@ void Graphics::DrawFlagTopTriangle(Vec2 v0, Vec2 v1, Vec2 v2, Color color)
     }
 }
 
-void Graphics::DrawFlagBottomTriangle(Vec2 v0, Vec2 v1, Vec2 v2, Color color)
+void Graphics::DrawFlatBottomTriangle(Vec2 v0, Vec2 v1, Vec2 v2, Color color)
 {
     const float m0 = (v2.x - v0.x) / (v2.y - v0.y);
     const float m1 = (v2.x - v1.x) / (v2.y - v1.y);
@@ -239,7 +280,7 @@ void Graphics::DrawFlagBottomTriangle(Vec2 v0, Vec2 v1, Vec2 v2, Color color)
 
     for (int y = yStart; y < yEnd; y++)
     {
-        const float pixelY = (float) y + 0.5f;
+        const float pixelY = (float)y + 0.5f;
         const float x0 = m0 * (pixelY - v0.y) + v0.x;
         const float x1 = m1 * (pixelY - v1.y) + v1.x;
 
@@ -249,6 +290,108 @@ void Graphics::DrawFlagBottomTriangle(Vec2 v0, Vec2 v1, Vec2 v2, Color color)
         for (int x = xStart; x < xEnd; x++)
         {
             PutPixel(x, y, color);
+        }
+    }
+}
+
+void Graphics::DrawFlatTopTriangleTex(const TexVertex& v0, const TexVertex& v1, const TexVertex& v2, const Surface& tex)
+{
+    // calculate slopes in screen space
+    const float m0 = (v1.pos.x - v0.pos.x) / (v1.pos.y - v0.pos.y);
+    const float m1 = (v2.pos.x - v0.pos.x) / (v2.pos.y - v0.pos.y);
+
+    // calculate start and end scanlines
+    const int yStart = (int)ceilf(v0.pos.y - 0.5f);
+    const int yEnd = (int)ceilf(v2.pos.y - 0.5f);
+
+    // init tex coord edges
+    Vec2 tcEdgeL = v0.tc;
+    Vec2 tcEdgeR = v0.tc;
+    const Vec2 tcTopL = v1.tc;
+    const Vec2 tcTopR = v2.tc;
+
+    // calculate tex coord edge unit steps
+    const Vec2 tcEdgeStepL = (tcEdgeL - tcTopL) / (v0.pos.y - v1.pos.y);
+    const Vec2 tcEdgeStepR = (tcEdgeR - tcTopR) / (v0.pos.y - v2.pos.y);
+
+    // do tex coord edge preStep
+    tcEdgeL += tcEdgeStepL * ((float)yStart + 0.5f - v0.pos.y);
+    tcEdgeR += tcEdgeStepR * ((float)yStart + 0.5f - v0.pos.y);
+
+    // init tex width/height and clamp values
+    const auto texWidth = (float)tex.GetWidth();
+    const auto texHeight = (float)tex.GetHeight();
+    const float texClampX = texWidth - 1.0f;
+    const float texClampY = texHeight - 1.0f;
+
+    for (int y = yStart; y < yEnd; y++, tcEdgeL += tcEdgeStepL, tcEdgeR += tcEdgeStepR)
+    {
+        const float px0 = m0 * (float(y) + 0.5f - v0.pos.y) + v0.pos.x;
+        const float px1 = m1 * (float(y) + 0.5f - v0.pos.y) + v0.pos.x;
+
+        const int xStart = (int)ceilf(px0 - 0.5f);
+        const int xEnd = (int)ceilf(px1 - 0.5f);
+
+        const Vec2 tcScanStep = (tcEdgeR - tcEdgeL) / (px1 - px0);
+
+        Vec2 tc = tcEdgeL + tcScanStep * (float(xStart) + 0.5f - px0);
+
+        for (int x = xStart; x < xEnd; x++, tc += tcScanStep)
+        {
+            const auto xTex = (int)std::clamp(tc.x * texWidth, 0.0f, texClampX);
+            const auto yTex = (int)std::clamp(tc.y * texHeight, 0.0f, texClampY);
+            PutPixel(x, y, tex.GetPixel(xTex, yTex));
+        }
+    }
+}
+
+void
+Graphics::DrawFlatBottomTriangleTex(const TexVertex& v0, const TexVertex& v1, const TexVertex& v2, const Surface& tex)
+{
+    // calculate slopes in screen space
+    const float m0 = (v2.pos.x - v0.pos.x) / (v2.pos.y - v0.pos.y);
+    const float m1 = (v2.pos.x - v1.pos.x) / (v2.pos.y - v1.pos.y);
+
+    // calculate start and end scanlines
+    const int yStart = (int)ceilf(v0.pos.y - 0.5f);
+    const int yEnd = (int)ceilf(v2.pos.y - 0.5f);
+
+    // init tex coord edges
+    Vec2 tcEdgeL = v0.tc;
+    Vec2 tcEdgeR = v1.tc;
+    const Vec2 tcTop = v2.tc;
+
+    // calculate tex coord edge unit steps
+    const Vec2 tcEdgeStepL = (tcEdgeL - tcTop) / (v0.pos.y - v2.pos.y);
+    const Vec2 tcEdgeStepR = (tcEdgeR - tcTop) / (v1.pos.y - v2.pos.y);
+
+    // do tex coord edge preStep
+    tcEdgeL += tcEdgeStepL * ((float)yStart + 0.5f - v0.pos.y);
+    tcEdgeR += tcEdgeStepR * ((float)yStart + 0.5f - v1.pos.y);
+
+    // init tex width/height and clamp values
+    const auto texWidth = (float)tex.GetWidth();
+    const auto texHeight = (float)tex.GetHeight();
+    const float texClampX = texWidth - 1.0f;
+    const float texClampY = texHeight - 1.0f;
+
+    for (int y = yStart; y < yEnd; y++, tcEdgeL += tcEdgeStepL, tcEdgeR += tcEdgeStepR)
+    {
+        const float px0 = m0 * (float(y) + 0.5f - v0.pos.y) + v0.pos.x;
+        const float px1 = m1 * (float(y) + 0.5f - v1.pos.y) + v1.pos.x;
+
+        const int xStart = (int)ceilf(px0 - 0.5f);
+        const int xEnd = (int)ceilf(px1 - 0.5f);
+
+        const Vec2 tcScanStep = (tcEdgeR - tcEdgeL) / (px1 - px0);
+
+        Vec2 tc = tcEdgeL + tcScanStep * (float(xStart) + 0.5f - px0);
+
+        for (int x = xStart; x < xEnd; x++, tc += tcScanStep)
+        {
+            const auto xTex = (int)std::clamp(tc.x * texWidth, 0.0f, texClampX);
+            const auto yTex = (int)std::clamp(tc.y * texHeight, 0.0f, texClampY);
+            PutPixel(x, y, tex.GetPixel(xTex, yTex));
         }
     }
 }
