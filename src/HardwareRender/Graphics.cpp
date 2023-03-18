@@ -301,42 +301,10 @@ void Graphics::DrawFlatTopTriangleTex(const TexVertex& v0, const TexVertex& v1, 
     const TexVertex dv0 = (v1 - v0) / deltaY;
     const TexVertex dv1 = (v2 - v0) / deltaY;
 
-    // create edge interpolant
-    TexVertex itEdge0 = v0;
+    // create right edge interpolant
     TexVertex itEdge1 = v0;
 
-    // calculate start and end scanlines
-    const int yStart = (int)ceilf(v0.pos.y - 0.5f);
-    const int yEnd = (int)ceilf(v2.pos.y - 0.5f);
-
-    // do interpolant pre-stepping
-    itEdge0 += dv0 * (float(yStart) + 0.5f - v0.pos.y);
-    itEdge1 += dv1 * (float(yStart) + 0.5f - v0.pos.y);
-
-    // init tex width/height and clamp values
-    const auto texWidth = (float)tex.GetWidth();
-    const auto texHeight = (float)tex.GetHeight();
-    const float texClampX = texWidth - 1.0f;
-    const float texClampY = texHeight - 1.0f;
-
-    for (int y = yStart; y < yEnd; y++, itEdge0 += dv0, itEdge1 += dv1)
-    {
-        const int xStart = (int)ceilf(itEdge0.pos.x - 0.5f);
-        const int xEnd = (int)ceilf(itEdge1.pos.x - 0.5f);
-
-        // scanline dTexCoord / dx
-        const Vec2 dTcLine = (itEdge1.tc - itEdge0.tc) / (itEdge1.pos.x - itEdge0.pos.x);
-
-        // create scanline tex coord interpolant and pre-stepping
-        Vec2 iTcLine = itEdge0.tc + dTcLine * (float(xStart) + 0.5f - itEdge0.pos.x);
-
-        for (int x = xStart; x < xEnd; x++, iTcLine += dTcLine)
-        {
-            const auto xTex = (int)std::clamp(iTcLine.x * texWidth, 0.0f, texClampX);
-            const auto yTex = (int)std::clamp(iTcLine.y * texHeight, 0.0f, texClampY);
-            PutPixel(x, y, tex.GetPixel(xTex, yTex));
-        }
-    }
+    DrawFlagTriangleTex(v0, v1, v2, tex, dv0, dv1, itEdge1);
 }
 
 void
@@ -347,9 +315,17 @@ Graphics::DrawFlatBottomTriangleTex(const TexVertex& v0, const TexVertex& v1, co
     const TexVertex dv0 = (v2 - v0) / deltaY;
     const TexVertex dv1 = (v2 - v1) / deltaY;
 
-    // create edge interpolants
-    TexVertex itEdge0 = v0;
+    // create right edge interpolant
     TexVertex itEdge1 = v1;
+
+    DrawFlagTriangleTex(v0, v1, v2, tex, dv0, dv1, itEdge1);
+}
+
+void Graphics::DrawFlagTriangleTex(const TexVertex& v0, const TexVertex& v1, const TexVertex& v2, const Surface& tex,
+    const TexVertex& dv0, const TexVertex& dv1, TexVertex& itEdge1)
+{
+    // create edge interpolant for left edge (always v0)
+    TexVertex itEdge0 = v0;
 
     // calculate start and end scanlines
     const int yStart = (int)ceilf(v0.pos.y - 0.5f);
@@ -357,7 +333,7 @@ Graphics::DrawFlatBottomTriangleTex(const TexVertex& v0, const TexVertex& v1, co
 
     // do interpolant preStep
     itEdge0 += dv0 * (float(yStart) + 0.5f - v0.pos.y);
-    itEdge1 += dv1 * (float(yStart) + 0.5f - v1.pos.y);
+    itEdge1 += dv1 * (float(yStart) + 0.5f - v0.pos.y);
 
     // init tex width/height and clamp values
     const auto texWidth = (float)tex.GetWidth();
