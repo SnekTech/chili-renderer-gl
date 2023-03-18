@@ -348,26 +348,22 @@ void Graphics::DrawFlatTopTriangleTex(const TexVertex& v0, const TexVertex& v1, 
 void
 Graphics::DrawFlatBottomTriangleTex(const TexVertex& v0, const TexVertex& v1, const TexVertex& v2, const Surface& tex)
 {
-    // calculate slopes in screen space
-    const float m0 = (v2.pos.x - v0.pos.x) / (v2.pos.y - v0.pos.y);
-    const float m1 = (v2.pos.x - v1.pos.x) / (v2.pos.y - v1.pos.y);
+    // calculate dVertex / dy
+    const float deltaY = v2.pos.y - v0.pos.y;
+    const TexVertex dv0 = (v2 - v0) / deltaY;
+    const TexVertex dv1 = (v2 - v1) / deltaY;
+
+    // create edge interpolants
+    TexVertex itEdge0 = v0;
+    TexVertex itEdge1 = v1;
 
     // calculate start and end scanlines
     const int yStart = (int)ceilf(v0.pos.y - 0.5f);
     const int yEnd = (int)ceilf(v2.pos.y - 0.5f);
 
-    // init tex coord edges
-    Vec2 tcEdgeL = v0.tc;
-    Vec2 tcEdgeR = v1.tc;
-    const Vec2 tcTop = v2.tc;
-
-    // calculate tex coord edge unit steps
-    const Vec2 tcEdgeStepL = (tcEdgeL - tcTop) / (v0.pos.y - v2.pos.y);
-    const Vec2 tcEdgeStepR = (tcEdgeR - tcTop) / (v1.pos.y - v2.pos.y);
-
-    // do tex coord edge preStep
-    tcEdgeL += tcEdgeStepL * ((float)yStart + 0.5f - v0.pos.y);
-    tcEdgeR += tcEdgeStepR * ((float)yStart + 0.5f - v1.pos.y);
+    // do interpolant preStep
+    itEdge0 += dv0 * (float(yStart) + 0.5f - v0.pos.y);
+    itEdge1 += dv1 * (float(yStart) + 0.5f - v1.pos.y);
 
     // init tex width/height and clamp values
     const auto texWidth = (float)tex.GetWidth();
@@ -375,22 +371,26 @@ Graphics::DrawFlatBottomTriangleTex(const TexVertex& v0, const TexVertex& v1, co
     const float texClampX = texWidth - 1.0f;
     const float texClampY = texHeight - 1.0f;
 
-    for (int y = yStart; y < yEnd; y++, tcEdgeL += tcEdgeStepL, tcEdgeR += tcEdgeStepR)
+    for (int y = yStart; y < yEnd; y++, itEdge0 += dv0, itEdge1 += dv1)
     {
-        const float px0 = m0 * (float(y) + 0.5f - v0.pos.y) + v0.pos.x;
-        const float px1 = m1 * (float(y) + 0.5f - v1.pos.y) + v1.pos.x;
+        // calculate start and end pixel
+        const int xStart = (int)ceilf(itEdge0.pos.x - 0.5f);
+        const int xEnd = (int)ceilf(itEdge1.pos.x - 0.5f);
 
-        const int xStart = (int)ceilf(px0 - 0.5f);
-        const int xEnd = (int)ceilf(px1 - 0.5f);
+        // calculate scanline dTexCoord / dx
+        const Vec2 dTcLine = (itEdge1.tc - itEdge0.tc) / (itEdge1.pos.x - itEdge0.pos.x);
 
-        const Vec2 tcScanStep = (tcEdgeR - tcEdgeL) / (px1 - px0);
+        // create scanline tex coord interpolant and preStep
+        Vec2 iTcLine = itEdge0.tc + dTcLine * (float(xStart) + 0.5f - itEdge0.pos.x);
 
-        Vec2 tc = tcEdgeL + tcScanStep * (float(xStart) + 0.5f - px0);
-
-        for (int x = xStart; x < xEnd; x++, tc += tcScanStep)
+        for (int x = xStart; x < xEnd; x++, iTcLine += dTcLine)
         {
-            const auto xTex = (int)std::clamp(tc.x * texWidth, 0.0f, texClampX);
-            const auto yTex = (int)std::clamp(tc.y * texHeight, 0.0f, texClampY);
+            const auto xTex = (int)std::clamp(iTcLine.x * texWidth, 0.0f, texClampX);
+            const auto yTex = (int)std::clamp(iTcLine.y * texHeight, 0.0f, texClampY);
+            if (x > Graphics::ScreenWidth)
+            {
+                std::cout << x << std::endl;
+            }
             PutPixel(x, y, tex.GetPixel(xTex, yTex));
         }
     }
