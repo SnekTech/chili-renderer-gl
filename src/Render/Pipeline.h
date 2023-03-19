@@ -12,83 +12,11 @@
 #include "DataStructures/Triangle.h"
 #include "PreClipScreenTransformer.h"
 
-// fixed-function triangle drawing pipeline
-// draws textured triangle lists with clamping
+template<class Effect>
 class Pipeline
 {
 public:
-    class Vertex
-    {
-    public:
-        Vertex() = default;
-
-        explicit Vertex(const Vec3& pos)
-            : pos(pos)
-        {
-        }
-
-        Vertex(const Vec3& pos, const Vertex& src)
-            : t(src.t), pos(pos)
-        {
-        } // change pos only when copying
-        Vertex(const Vec3& pos, const Vec2& t)
-            : t(t), pos(pos)
-        {
-        }
-
-        Vertex& operator+=(const Vertex& rhs)
-        {
-            pos += rhs.pos;
-            t += rhs.t;
-            return *this;
-        }
-
-        Vertex operator+(const Vertex& rhs) const
-        {
-            return Vertex(*this) += rhs;
-        }
-
-        Vertex& operator-=(const Vertex& rhs)
-        {
-            pos -= rhs.pos;
-            t -= rhs.t;
-            return *this;
-        }
-
-        Vertex operator-(const Vertex& rhs) const
-        {
-            return Vertex(*this) -= rhs;
-        }
-
-        Vertex& operator*=(float rhs)
-        {
-            pos *= rhs;
-            t *= rhs;
-            return *this;
-        }
-
-        Vertex operator*(float rhs) const
-        {
-            return Vertex(*this) *= rhs;
-        }
-
-        Vertex& operator/=(float rhs)
-        {
-            pos /= rhs;
-            t /= rhs;
-            return *this;
-        }
-
-        Vertex operator/(float rhs) const
-        {
-            return Vertex(*this) /= rhs;
-        }
-
-    public:
-        Vec3 pos = { 0, 0, 0 };
-        Vec2 t = { 0, 0 };
-    };
-
+    typedef typename Effect::Vertex Vertex;
 public:
     Pipeline(Graphics& gfx)
         : gfx(gfx)
@@ -108,11 +36,6 @@ public:
     void BindTranslation(const Vec3 translationIn)
     {
         translation = translationIn;
-    }
-
-    void BindTexture(const std::string& filename)
-    {
-        pTex = std::make_unique<Surface>(Surface::FromFile(filename));
     }
 
 private:
@@ -245,12 +168,6 @@ private:
         itEdge0 += dv0 * (float(yStart) + 0.5f - v0.pos.y);
         itEdge1 += dv1 * (float(yStart) + 0.5f - v0.pos.y);
 
-        // init tex width/height and clamp values
-        const auto texWidth = (float)pTex->GetWidth();
-        const auto texHeight = (float)pTex->GetHeight();
-        const float texClampX = texWidth - 1.0f;
-        const float texClampY = texHeight - 1.0f;
-
         for (int y = yStart; y < yEnd; y++, itEdge0 += dv0, itEdge1 += dv1)
         {
             // calculate start and end pixel
@@ -266,21 +183,19 @@ private:
 
             for (int x = xStart; x < xEnd; x++, iLine += diLine)
             {
-                const auto xTex = (int)std::clamp(iLine.t.x * texWidth, 0.0f, texClampX);
-                const auto yTex = (int)std::clamp(iLine.t.y * texHeight, 0.0f, texClampY);
-
-                gfx.PutPixel(x, y, pTex->GetPixel(xTex, yTex));
+                gfx.PutPixel(x, y, effect.ps(iLine));
             }
         }
 
     }
 
+public:
+    Effect effect;
 private:
     Graphics& gfx;
     PreClipScreenTransformer pst;
     Mat3 rotation = Mat3::Identity();
     Vec3 translation = { 0, 0, 0 };
-    std::unique_ptr<Surface> pTex;
 };
 
 #endif //CHILI_RENDERER_GL_PIPELINE_H

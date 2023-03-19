@@ -9,17 +9,19 @@
 #include "Shapes/Cube.h"
 #include "DataStructures/Mat.h"
 #include "Render/Pipeline.h"
+#include "Effects/TextureEffect.h"
 
 class CubeSkinnedScene : public Scene
 {
 public:
+    typedef Pipeline<TextureEffect> Pipeline;
     typedef Pipeline::Vertex Vertex;
 public:
     explicit CubeSkinnedScene(Graphics& gfx, const std::string& filename)
         : itList(Cube::GetSkinned<Vertex>()),
           pipeline(gfx)
     {
-        pipeline.BindTexture(filename);
+        pipeline.effect.ps.BindTexture(filename);
     }
 
     void Update(const Widgets::Controller& controller, float deltaTime) override
