@@ -47,7 +47,7 @@ Surface Surface::FromFile(const std::string& name)
 
     int w, h, n;
     {
-        stbi_set_flip_vertically_on_load(true);
+//        stbi_set_flip_vertically_on_load(true);
         unsigned char* data = stbi_load(name.c_str(), &w, &h, &n, 0);
         if (data == nullptr || n != 4)
         {

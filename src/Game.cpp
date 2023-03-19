@@ -10,6 +10,7 @@
 #include "Scenes/ConHexWireScene.h"
 #include "Scenes/XMutualScene.h"
 #include "Scenes/TexCubeScene.h"
+#include "Scenes/CubeSkinnedScene.h"
 
 using Button = Widgets::Controller::Button;
 
@@ -22,6 +23,7 @@ Game::Game() : controller(GLFW_JOYSTICK_1)
     scenes.push_back(std::make_unique<ConHexWireScene>());
     scenes.push_back(std::make_unique<XMutualScene>());
     scenes.push_back(std::make_unique<TexCubeScene>());
+    scenes.push_back(std::make_unique<CubeSkinnedScene>("../images/dice_skin.png"));
 
     currentScene = scenes.begin();
 }
