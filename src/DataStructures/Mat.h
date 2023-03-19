@@ -222,13 +222,13 @@ public:
 };
 
 template<typename T>
-_Vec3<T>& operator *= (_Vec3<T>& lhs, const Matrix<T, 3>& rhs)
+Vector3<T>& operator *= (Vector3<T>& lhs, const Matrix<T, 3>& rhs)
 {
 	return lhs = lhs * rhs;
 }
 
 template<typename T>
-_Vec3<T> operator*(const _Vec3<T>& lhs, const Matrix<T, 3>& rhs)
+Vector3<T> operator*(const Vector3<T>& lhs, const Matrix<T, 3>& rhs)
 {
 	const auto& matrix = rhs.Elements;
 	return
@@ -240,13 +240,13 @@ _Vec3<T> operator*(const _Vec3<T>& lhs, const Matrix<T, 3>& rhs)
 }
 
 template<typename T>
-_Vec3<T>& operator *= (_Vec4<T>& lhs, const Matrix<T, 4>& rhs)
+Vector3<T>& operator *= (Vector4<T>& lhs, const Matrix<T, 4>& rhs)
 {
 	return lhs = lhs * rhs;
 }
 
 template<typename T>
-_Vec3<T> operator*(const _Vec4<T>& lhs, const Matrix<T, 4>& rhs)
+Vector3<T> operator*(const Vector4<T>& lhs, const Matrix<T, 4>& rhs)
 {
 	const auto& matrix = rhs.Elements;
 	return

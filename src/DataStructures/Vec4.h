@@ -25,21 +25,21 @@
 #include "Vec3.h"
 
 template <typename T>
-class _Vec4
+class Vector4
 {
 public:
-	_Vec4() = default;
-	_Vec4( T x,T y,T z,T w )
+	Vector4() = default;
+	Vector4( T x,T y,T z,T w )
 		:
 		x(x), y(y), z(z), w( w )
 	{}
-	_Vec4( const _Vec3<T>& v3,float w = 1.0f  )
+	Vector4( const Vector3<T>& v3,float w = 1.0f  )
 		:
 		x(v3.x),y(v3.y),z(v3.z),
 		w( w )
 	{}
 	template <typename T2>
-	explicit operator _Vec4<T2>() const
+	explicit operator Vector4<T2>() const
 	{
 		return{ (T2)x,(T2)y,(T2)z,(T2)w };
 	}
@@ -65,11 +65,11 @@ public:
 	//	norm.Normalize();
 	//	return norm;
 	//}
-	_Vec4	operator-() const
+	Vector4	operator-() const
 	{
-		return _Vec4( -x,-y,-z,-w );
+		return Vector4( -x,-y,-z,-w );
 	}
-	_Vec4&	operator=( const _Vec4 &rhs )
+	Vector4&	operator=( const Vector4 &rhs )
 	{
 		x = rhs.x;
 		y = rhs.y;
@@ -77,7 +77,7 @@ public:
 		w = rhs.w;
 		return *this;
 	}
-	_Vec4&	operator+=( const _Vec4 &rhs )
+	Vector4&	operator+=( const Vector4 &rhs )
 	{
 		x += rhs.x;
 		y += rhs.y;
@@ -85,7 +85,7 @@ public:
 		w += rhs.w;
 		return *this;
 	}
-	_Vec4&	operator-=( const _Vec4 &rhs )
+	Vector4&	operator-=( const Vector4 &rhs )
 	{
 		x -= rhs.x;
 		y -= rhs.y;
@@ -97,15 +97,15 @@ public:
 	//{
 	//	return x * rhs.x + y * rhs.y + z * rhs.z;
 	//}
-	_Vec4	operator+( const _Vec4 &rhs ) const
+	Vector4	operator+( const Vector4 &rhs ) const
 	{
-		return _Vec4( *this ) += rhs;
+		return Vector4( *this ) += rhs;
 	}
-	_Vec4	operator-( const _Vec4 &rhs ) const
+	Vector4	operator-( const Vector4 &rhs ) const
 	{
-		return _Vec4( *this ) -= rhs;
+		return Vector4( *this ) -= rhs;
 	}
-	_Vec4&	operator*=( const T &rhs )
+	Vector4&	operator*=( const T &rhs )
 	{
 		x *= rhs;
 		y *= rhs;
@@ -113,9 +113,9 @@ public:
 		w *= rhs;
 		return *this;
 	}
-	_Vec4	operator*( const T &rhs ) const
+	Vector4	operator*( const T &rhs ) const
 	{
-		return _Vec4( *this ) *= rhs;
+		return Vector4( *this ) *= rhs;
 	}
 	//_Vec4	operator%( const _Vec4& rhs ) const
 	//{
@@ -124,7 +124,7 @@ public:
 	//		z * rhs.x - x * rhs.z,
 	//		x * rhs.y - y * rhs.x );
 	//}
-	_Vec4&	operator/=( const T &rhs )
+	Vector4&	operator/=( const T &rhs )
 	{
 		x /= rhs;
 		y /= rhs;
@@ -132,20 +132,20 @@ public:
 		w /= rhs;
 		return *this;
 	}
-	_Vec4	operator/( const T &rhs ) const
+	Vector4	operator/( const T &rhs ) const
 	{
-		return _Vec4( *this ) /= rhs;
+		return Vector4( *this ) /= rhs;
 	}
-	bool	operator==( const _Vec4 &rhs ) const
+	bool	operator==( const Vector4 &rhs ) const
 	{
 		return x == rhs.x && y == rhs.y && rhs.z == z && rhs.w == w;
 	}
-	bool	operator!=( const _Vec4 &rhs ) const
+	bool	operator!=( const Vector4 &rhs ) const
 	{
 		return !(*this == rhs);
 	}
 	// clamp to between 0.0 ~ 1.0
-	_Vec4&	Saturate()
+	Vector4&	Saturate()
 	{
 		x = std::min( 1.0f,std::max( 0.0f,x ) );
 		y = std::min( 1.0f,std::max( 0.0f,y ) );
@@ -154,14 +154,14 @@ public:
 		return *this;
 	}
 	// clamp to between 0.0 ~ 1.0
-	_Vec4	GetSaturated() const
+	Vector4	GetSaturated() const
 	{
-		_Vec4 temp( *this );
+		Vector4 temp( *this );
 		temp.Saturate();
 		return temp;
 	}
 	// x3 = x1 * x2 etc.
-	_Vec4&  Hadamard( const _Vec4& rhs )
+	Vector4&  Hadamard( const Vector4& rhs )
 	{
 		x *= rhs.x;
 		y *= rhs.y;
@@ -170,9 +170,9 @@ public:
 		return *this;
 	}
 	// x3 = x1 * x2 etc.
-	_Vec4	GetHadamard( const _Vec4& rhs ) const
+	Vector4	GetHadamard( const Vector4& rhs ) const
 	{
-		_Vec4 temp( *this );
+		Vector4 temp( *this );
 		temp.Hadamard( rhs );
 		return temp;
 	}
@@ -183,6 +183,6 @@ public:
 	T w;
 };
 
-typedef _Vec4<float> Vec4;
-typedef _Vec4<double> Ved4;
-typedef _Vec4<int> Vei4;
+typedef Vector4<float> Vec4;
+typedef Vector4<double> Ved4;
+typedef Vector4<int> Vei4;
