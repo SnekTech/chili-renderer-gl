@@ -5,7 +5,7 @@
 #ifndef CHILI_RENDERER_GL_SCENE_H
 #define CHILI_RENDERER_GL_SCENE_H
 
-#include "HardwareRender/Graphics.h"
+#include "Render/Graphics.h"
 #include "Widgets/Controller.h"
 
 class Scene

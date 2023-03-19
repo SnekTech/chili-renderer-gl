@@ -10,7 +10,7 @@
 
 #include "Widgets/FrameTimer.h"
 #include "Widgets/Controller.h"
-#include "HardwareRender/Graphics.h"
+#include "Render/Graphics.h"
 #include "PreClipScreenTransformer.h"
 #include "Shapes/Cube.h"
 #include "Scenes/Scene.h"

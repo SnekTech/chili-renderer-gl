@@ -8,7 +8,7 @@
 #include "Scene.h"
 #include "Shapes/Cube.h"
 #include "DataStructures/Mat.h"
-#include "HardwareRender/Pipeline.h"
+#include "Render/Pipeline.h"
 
 class CubeSkinnedScene : public Scene
 {

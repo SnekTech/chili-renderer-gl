@@ -6,7 +6,7 @@
 #define CHILI_RENDERER_GL_PRECLIPSCREENTRANSFORMER_H
 
 #include "DataStructures/Vec3.h"
-#include "HardwareRender/Graphics.h"
+#include "Render/Graphics.h"
 
 class PreClipScreenTransformer
 {
