@@ -175,10 +175,6 @@ public:
 		temp.Hadamard( rhs );
 		return temp;
 	}
-    Vector3 InterpolateTo(const Vector3& dest, float alpha) const
-    {
-        return *this + (dest - *this) * alpha;
-    }
 public:
     T x;
     T y;

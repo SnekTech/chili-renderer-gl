@@ -6,16 +6,22 @@
 #define CHILI_RENDERER_GL_CUBESKINNEDSCENE_H
 
 #include "Scene.h"
-#include "Shapes/CubeSkinned.h"
-#include "PreClipScreenTransformer.h"
+#include "Shapes/Cube.h"
 #include "DataStructures/Mat.h"
+#include "HardwareRender/Pipeline.h"
 
 class CubeSkinnedScene : public Scene
 {
 public:
-    explicit CubeSkinnedScene(const std::string& filename)
-        : sbTex(Surface::FromFile(filename))
-    {}
+    typedef Pipeline::Vertex Vertex;
+public:
+    explicit CubeSkinnedScene(Graphics& gfx, const std::string& filename)
+        : itList(Cube::GetSkinned<Vertex>()),
+          pipeline(gfx)
+    {
+        pipeline.BindTexture(filename);
+    }
+
     void Update(const Widgets::Controller& controller, float deltaTime) override
     {
         using Button = Widgets::Controller::Button;
@@ -44,61 +50,26 @@ public:
         }
     }
 
-    void Draw(Graphics& gfx) const override
+    void Draw() override
     {
         Mat3 rot = Mat3::RotationX(theta_x) *
                    Mat3::RotationY(theta_y) *
                    Mat3::RotationZ(theta_z);
 
-        auto triangles = cube.GetTrianglesTex();
+        const Vec3 trans = { 0, 0, offset_z };
 
-        // model space --> world(/view) space
-        for (auto& v: triangles.vertices)
-        {
-            v.pos *= rot;
-            v.pos += { 0, 0, offset_z };
-        }
+        pipeline.BindRotation(rot);
+        pipeline.BindTranslation(trans);
 
-        const auto& vertices = triangles.vertices;
-        const auto& indices = triangles.indices;
-
-        // backface culling
-        for (int i = 0; i < indices.size() / 3; i++)
-        {
-            const auto& v0 = vertices[indices[i * 3]].pos;
-            const auto& v1 = vertices[indices[i * 3 + 1]].pos;
-            const auto& v2 = vertices[indices[i * 3 + 2]].pos;
-
-            triangles.cullFlags[i] = (v1 - v0).Cross(v2 - v0) * v0 > 0.0f;
-        }
-
-        // world space --> screen space
-        for (auto& v: triangles.vertices)
-        {
-            pst.Transform(v.pos);
-        }
-
-        for (int i = 0; i < indices.size() / 3; i++)
-        {
-            // skip culled triangle
-            if (triangles.cullFlags[i]) continue;
-
-            const auto& v0 = vertices[indices[i * 3]];
-            const auto& v1 = vertices[indices[i * 3 + 1]];
-            const auto& v2 = vertices[indices[i * 3 + 2]];
-
-            gfx.DrawTriangleTex(v0, v1, v2, sbTex);
-        }
+        pipeline.Draw(itList);
     }
 
 private:
-    PreClipScreenTransformer pst;
     const float LerpAlpha = 0.5;
-    CubeSkinned cube = CubeSkinned(1.0f);
-    Surface sbTex;
+    IndexedTriangleList<Vertex> itList;
+    Pipeline pipeline;
     float theta_x = 0, theta_y = 0, theta_z = 0;
     static constexpr float dTheta = PI;
-
     float offset_z = 2;
 };
 

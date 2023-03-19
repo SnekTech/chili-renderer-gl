@@ -120,10 +120,6 @@ public:
 	{
         return !operator==(rhs);
 	}
-    Vector2 InterpolateTo(const Vector2& dest, float alpha) const
-    {
-        return *this + (dest - *this) * alpha;
-    }
 public:
 	T x;
 	T y;

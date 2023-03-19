@@ -4,12 +4,6 @@
 
 #include "Game.h"
 #include "Widgets/ChiliMath.h"
-#include "Scenes/SolidCubeScene.h"
-#include "Scenes/CubeOrderScene.h"
-#include "Scenes/ConHexScene.h"
-#include "Scenes/ConHexWireScene.h"
-#include "Scenes/XMutualScene.h"
-#include "Scenes/TexCubeScene.h"
 #include "Scenes/CubeSkinnedScene.h"
 
 using Button = Widgets::Controller::Button;
@@ -17,13 +11,7 @@ using Button = Widgets::Controller::Button;
 
 Game::Game() : controller(GLFW_JOYSTICK_1)
 {
-    scenes.push_back(std::make_unique<SolidCubeScene>());
-    scenes.push_back(std::make_unique<CubeOrderScene>());
-    scenes.push_back(std::make_unique<ConHexScene>());
-    scenes.push_back(std::make_unique<ConHexWireScene>());
-    scenes.push_back(std::make_unique<XMutualScene>());
-    scenes.push_back(std::make_unique<TexCubeScene>());
-    scenes.push_back(std::make_unique<CubeSkinnedScene>("../images/dice_skin.png"));
+    scenes.push_back(std::make_unique<CubeSkinnedScene>(gfx, "../images/dice_skin.png"));
 
     currentScene = scenes.begin();
 }
@@ -60,7 +48,7 @@ void Game::UpdateModel()
 
 void Game::ComposeFrame()
 {
-    (*currentScene)->Draw(gfx);
+    (*currentScene)->Draw();
 }
 
 void Game::CycleScenes(bool backwards)
