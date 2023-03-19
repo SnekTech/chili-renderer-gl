@@ -25,6 +25,6 @@ list(APPEND INCLUDE_DIR src)
 list(APPEND LINK_LIBS glfw)
 
 list(APPEND MAIN_SOURCE ${GLAD_DIR}/src/gl.c src/main.cpp)
-add_executable(main ${MAIN_SOURCE} src/Widgets/Shader.h src/Render/Surface.cpp src/Render/Surface.h src/Render/Colors.h src/Render/Graphics.cpp src/Render/Graphics.h src/Game.cpp src/Game.h src/Widgets/FrameTimer.cpp src/Widgets/FrameTimer.h src/DataStructures/Mat.h src/PreClipScreenTransformer.h src/DataStructures/IndexedList.h src/Widgets/Controller.h src/Widgets/Controller.cpp src/Scenes/Scene.h external/stb_image.h src/Shapes/Cube.h src/Scenes/CubeSkinnedScene.h src/Render/Pipeline.h src/DataStructures/Triangle.h src/Effects/TextureEffect.h)
+add_executable(main ${MAIN_SOURCE} src/Widgets/Shader.h src/Render/Surface.cpp src/Render/Surface.h src/Render/Colors.h src/Render/Graphics.cpp src/Render/Graphics.h src/Game.cpp src/Game.h src/Widgets/FrameTimer.cpp src/Widgets/FrameTimer.h src/DataStructures/Mat.h src/PreClipScreenTransformer.h src/DataStructures/IndexedList.h src/Widgets/Controller.h src/Widgets/Controller.cpp src/Scenes/Scene.h external/stb_image.h src/Shapes/Cube.h src/Scenes/CubeSkinnedScene.h src/Render/Pipeline.h src/DataStructures/Triangle.h src/Effects/TextureEffect.h src/Effects/VertexColorEffect.h src/Scenes/CubeVertexColorScene.h)
 target_include_directories(main PUBLIC ${INCLUDE_DIR})
 target_link_libraries(main PUBLIC ${LINK_LIBS})

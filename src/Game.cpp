@@ -5,6 +5,7 @@
 #include "Game.h"
 #include "Widgets/ChiliMath.h"
 #include "Scenes/CubeSkinnedScene.h"
+#include "Scenes/CubeVertexColorScene.h"
 
 using Button = Widgets::Controller::Button;
 
@@ -12,6 +13,7 @@ using Button = Widgets::Controller::Button;
 Game::Game() : controller(GLFW_JOYSTICK_1)
 {
     scenes.push_back(std::make_unique<CubeSkinnedScene>(gfx, "../images/dice_skin.png"));
+    scenes.push_back(std::make_unique<CubeVertexColorScene>(gfx));
 
     currentScene = scenes.begin();
 }

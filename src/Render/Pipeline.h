@@ -45,7 +45,7 @@ private:
 
         for (const auto& v: vertices)
         {
-            verticesOut.emplace_back(v.pos * rotation + translation, v.t);
+            verticesOut.emplace_back(v.pos * rotation + translation, v);
         }
 
         AssembleTriangles(verticesOut, indices);
