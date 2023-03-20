@@ -61,6 +61,7 @@ public:
 
 	void Draw() override
 	{
+        pipeline.BeginFrame();
 		// draw fixed cube
 		{
 			const Mat3 rot =

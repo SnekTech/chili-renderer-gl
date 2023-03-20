@@ -11,6 +11,7 @@
 #include "DataStructures/Mat.h"
 #include "DataStructures/Triangle.h"
 #include "PreClipScreenTransformer.h"
+#include "ZBuffer.h"
 
 template<class Effect>
 class Pipeline
@@ -19,7 +20,7 @@ public:
     typedef typename Effect::Vertex Vertex;
 public:
     Pipeline(Graphics& gfx)
-        : gfx(gfx)
+        : gfx(gfx), zb(Graphics::ScreenWidth, Graphics::ScreenHeight)
     {
     }
 
@@ -36,6 +37,11 @@ public:
     void BindTranslation(const Vec3 translationIn)
     {
         translation = translationIn;
+    }
+
+    void BeginFrame()
+    {
+        zb.Clear();
     }
 
 private:
@@ -183,9 +189,12 @@ private:
 
             for (int x = xStart; x < xEnd; x++, iLine += diLine)
             {
-				const float z = 1.0f / iLine.pos.z;
-				const auto attr = iLine * z;
-                gfx.PutPixel(x, y, effect.ps(attr));
+                const float z = 1.0f / iLine.pos.z;
+                if (zb.TestAndSet(x, y, z))
+                {
+                    const auto attr = iLine * z;
+                    gfx.PutPixel(x, y, effect.ps(attr));
+                }
             }
         }
 
@@ -196,6 +205,7 @@ public:
 private:
     Graphics& gfx;
     PreClipScreenTransformer pst;
+    ZBuffer zb;
     Mat3 rotation = Mat3::Identity();
     Vec3 translation = { 0, 0, 0 };
 };

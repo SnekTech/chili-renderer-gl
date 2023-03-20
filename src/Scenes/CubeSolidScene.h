@@ -61,6 +61,7 @@ public:
 
     void Draw() override
     {
+        pipeline.BeginFrame();
         Mat3 rot = Mat3::RotationX(theta_x) *
                    Mat3::RotationY(theta_y) *
                    Mat3::RotationZ(theta_z);
