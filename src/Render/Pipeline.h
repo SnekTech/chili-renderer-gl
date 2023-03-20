@@ -75,9 +75,9 @@ private:
 
     void PostProcessTriangleVertices(Triangle<Vertex> triangle)
     {
-        pst.Transform(triangle.v0.pos);
-        pst.Transform(triangle.v1.pos);
-        pst.Transform(triangle.v2.pos);
+        pst.Transform(triangle.v0);
+        pst.Transform(triangle.v1);
+        pst.Transform(triangle.v2);
 
         DrawTriangle(triangle);
     }
@@ -183,7 +183,9 @@ private:
 
             for (int x = xStart; x < xEnd; x++, iLine += diLine)
             {
-                gfx.PutPixel(x, y, effect.ps(iLine));
+				const float z = 1.0f / iLine.pos.z;
+				const auto attr = iLine * z;
+                gfx.PutPixel(x, y, effect.ps(attr));
             }
         }
 
