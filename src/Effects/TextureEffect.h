@@ -7,6 +7,7 @@
 
 #include "Render/Pipeline.h"
 #include "DefaultVertexShader.h"
+#include "DefaultGeometryShader.h"
 
 class TextureEffect
 {
@@ -85,6 +86,8 @@ public:
 
     typedef DefaultVertexShader<Vertex> VertexShader;
 
+    typedef DefaultGeometryShader<VertexShader::Output> GeometryShader;
+
     class PixelShader
     {
     public:
@@ -115,6 +118,7 @@ public:
 
 public:
     VertexShader vs;
+    GeometryShader gs;
     PixelShader ps;
 };
 

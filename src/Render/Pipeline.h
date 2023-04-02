@@ -19,8 +19,9 @@ class Pipeline
 public:
     typedef typename Effect::Vertex Vertex;
     typedef typename Effect::VertexShader::Output VSOut;
+    typedef typename Effect::GeometryShader::Output GSOut;
 public:
-    Pipeline(Graphics& gfx)
+    explicit Pipeline(Graphics& gfx)
         : gfx(gfx), zb(Graphics::ScreenWidth, Graphics::ScreenHeight)
     {
     }
@@ -33,6 +34,7 @@ public:
     void BeginFrame()
     {
         zb.Clear();
+        triangle_index = 0;
     }
 
 private:
@@ -64,10 +66,10 @@ private:
     void ProcessTriangle(const VSOut& v0, const VSOut & v1, const VSOut & v2)
     {
         // geometry shader here
-        PostProcessTriangleVertices(Triangle<VSOut>{ v0, v1, v2 });
+        PostProcessTriangleVertices(effect.gs(v0, v1, v2, triangle_index));
     }
 
-    void PostProcessTriangleVertices(Triangle<VSOut> triangle)
+    void PostProcessTriangleVertices(Triangle<GSOut> triangle)
     {
         pst.Transform(triangle.v0);
         pst.Transform(triangle.v1);
@@ -76,11 +78,11 @@ private:
         DrawTriangle(triangle);
     }
 
-    void DrawTriangle(const Triangle<VSOut>& triangle)
+    void DrawTriangle(const Triangle<GSOut>& triangle)
     {
-        const VSOut* pv0 = &triangle.v0;
-        const VSOut* pv1 = &triangle.v1;
-        const VSOut* pv2 = &triangle.v2;
+        const GSOut* pv0 = &triangle.v0;
+        const GSOut* pv1 = &triangle.v1;
+        const GSOut* pv2 = &triangle.v2;
 
         using std::swap;
         if (pv1->pos.y < pv0->pos.y) swap(pv0, pv1);
@@ -120,7 +122,7 @@ private:
 
     }
 
-    void DrawFlatTopTriangle(const VSOut& v0, const VSOut & v1, const VSOut & v2)
+    void DrawFlatTopTriangle(const GSOut & v0, const GSOut & v1, const GSOut & v2)
     {
         const float deltaY = v2.pos.y - v0.pos.y;
         const auto dv0 = (v1 - v0) / deltaY;
@@ -131,7 +133,7 @@ private:
         DrawFlatTriangle(v0, v1, v2, dv0, dv1, itEdge1);
     }
 
-    void DrawFlatBottomTriangle(const VSOut & v0, const VSOut & v1, const VSOut & v2)
+    void DrawFlatBottomTriangle(const GSOut & v0, const GSOut & v1, const GSOut & v2)
     {
         const float deltaY = v2.pos.y - v0.pos.y;
         const auto dv0 = (v2 - v0) / deltaY;
@@ -143,12 +145,12 @@ private:
     }
 
     void DrawFlatTriangle(
-        const VSOut & v0,
-        const VSOut & v1,
-        const VSOut & v2,
-        const VSOut & dv0,
-        const VSOut & dv1,
-        VSOut itEdge1
+        const GSOut & v0,
+        const GSOut & v1,
+        const GSOut & v2,
+        const GSOut & dv0,
+        const GSOut & dv1,
+        GSOut itEdge1
     )
     {
         // create edge interpolant for left edge (always v0)
@@ -194,6 +196,7 @@ private:
     Graphics& gfx;
     PreClipScreenTransformer pst;
     ZBuffer zb;
+    unsigned int triangle_index;
 };
 
 #endif //CHILI_RENDERER_GL_PIPELINE_H

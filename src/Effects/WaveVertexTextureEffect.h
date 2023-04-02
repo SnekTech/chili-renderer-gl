@@ -121,6 +121,8 @@ public:
         float amplitude = 0.05f;
     };
 
+    typedef DefaultGeometryShader<VertexShader::Output> GeometryShader;
+
     class PixelShader
     {
     public:
@@ -151,6 +153,7 @@ public:
 
 public:
     VertexShader vs;
+    GeometryShader gs;
     PixelShader ps;
 };
 

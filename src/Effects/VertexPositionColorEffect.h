@@ -182,6 +182,8 @@ public:
         Vec3 translation;
     };
 
+    typedef DefaultGeometryShader<VertexShader::Output> GeometryShader;
+
     // converts float color into packed byte color
     class PixelShader
     {
@@ -195,6 +197,7 @@ public:
 
 public:
     VertexShader vs;
+    GeometryShader gs;
     PixelShader ps;
 };
 
