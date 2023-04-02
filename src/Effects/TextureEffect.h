@@ -6,6 +6,7 @@
 #define CHILI_RENDERER_GL_TEXTUREEFFECT_H
 
 #include "Render/Pipeline.h"
+#include "DefaultVertexShader.h"
 
 class TextureEffect
 {
@@ -82,6 +83,8 @@ public:
         Vec2 t = { 0, 0 };
     };
 
+    typedef DefaultVertexShader<Vertex> VertexShader;
+
     class PixelShader
     {
     public:
@@ -111,6 +114,7 @@ public:
     };
 
 public:
+    VertexShader vs;
     PixelShader ps;
 };
 

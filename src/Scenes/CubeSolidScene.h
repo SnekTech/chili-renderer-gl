@@ -68,8 +68,8 @@ public:
 
         const Vec3 trans = { 0, 0, offset_z };
 
-        pipeline.BindRotation(rot);
-        pipeline.BindTranslation(trans);
+        pipeline.effect.vs.BindRotation(rot);
+        pipeline.effect.vs.BindTranslation(trans);
 
         pipeline.Draw(itList);
     }

@@ -69,7 +69,7 @@ Graphics::Graphics()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    Shader ourShader(R"(.\..\src\shaders\vs.glsl)", R"(.\..\src\shaders\fs.glsl)");
+    Shader ourShader(R"(.\..\src\native-shaders\vs.glsl)", R"(.\..\src\native-shaders\fs.glsl)");
     ourShader.Use();
 }
 

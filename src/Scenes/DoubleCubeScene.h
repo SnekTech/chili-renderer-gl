@@ -69,8 +69,8 @@ public:
 				Mat3::RotationY(-theta_y) *
 				Mat3::RotationZ(-theta_z);
 
-			pipeline.BindRotation(rot);
-			pipeline.BindTranslation({ 0, 0, 2 });
+			pipeline.effect.vs.BindRotation(rot);
+			pipeline.effect.vs.BindTranslation({ 0, 0, 2 });
 			pipeline.Draw(itList);
 		}
 
@@ -83,8 +83,8 @@ public:
 
 			const Vec3 trans = { 0, 0, offset_z };
 
-			pipeline.BindRotation(rot);
-			pipeline.BindTranslation(trans);
+			pipeline.effect.vs.BindRotation(rot);
+			pipeline.effect.vs.BindTranslation(trans);
 
 			pipeline.Draw(itList);
 		}

@@ -18,6 +18,7 @@ class Pipeline
 {
 public:
     typedef typename Effect::Vertex Vertex;
+    typedef typename Effect::VertexShader::Output VSOut;
 public:
     Pipeline(Graphics& gfx)
         : gfx(gfx), zb(Graphics::ScreenWidth, Graphics::ScreenHeight)
@@ -29,16 +30,6 @@ public:
         ProcessVertices(triList.vertices, triList.indices);
     }
 
-    void BindRotation(const Mat3& rotationIn)
-    {
-        rotation = rotationIn;
-    }
-
-    void BindTranslation(const Vec3 translationIn)
-    {
-        translation = translationIn;
-    }
-
     void BeginFrame()
     {
         zb.Clear();
@@ -47,17 +38,14 @@ public:
 private:
     void ProcessVertices(const std::vector<Vertex>& vertices, const std::vector<size_t>& indices)
     {
-        std::vector<Vertex> verticesOut;
+        std::vector<VSOut> verticesOut(vertices.size());
 
-        for (const auto& v: vertices)
-        {
-            verticesOut.emplace_back(v.pos * rotation + translation, v);
-        }
+        std::transform(vertices.begin(), vertices.end(), verticesOut.begin(), effect.vs);
 
         AssembleTriangles(verticesOut, indices);
     }
 
-    void AssembleTriangles(const std::vector<Vertex>& vertices, const std::vector<size_t>& indices)
+    void AssembleTriangles(const std::vector<VSOut>& vertices, const std::vector<size_t>& indices)
     {
         for (size_t i = 0, end = indices.size() / 3; i < end; i++)
         {
@@ -73,13 +61,13 @@ private:
         }
     }
 
-    void ProcessTriangle(const Vertex& v0, const Vertex& v1, const Vertex& v2)
+    void ProcessTriangle(const VSOut& v0, const VSOut & v1, const VSOut & v2)
     {
         // geometry shader here
-        PostProcessTriangleVertices(Triangle<Vertex>{ v0, v1, v2 });
+        PostProcessTriangleVertices(Triangle<VSOut>{ v0, v1, v2 });
     }
 
-    void PostProcessTriangleVertices(Triangle<Vertex> triangle)
+    void PostProcessTriangleVertices(Triangle<VSOut> triangle)
     {
         pst.Transform(triangle.v0);
         pst.Transform(triangle.v1);
@@ -88,11 +76,11 @@ private:
         DrawTriangle(triangle);
     }
 
-    void DrawTriangle(const Triangle<Vertex>& triangle)
+    void DrawTriangle(const Triangle<VSOut>& triangle)
     {
-        const Vertex* pv0 = &triangle.v0;
-        const Vertex* pv1 = &triangle.v1;
-        const Vertex* pv2 = &triangle.v2;
+        const VSOut* pv0 = &triangle.v0;
+        const VSOut* pv1 = &triangle.v1;
+        const VSOut* pv2 = &triangle.v2;
 
         using std::swap;
         if (pv1->pos.y < pv0->pos.y) swap(pv0, pv1);
@@ -132,7 +120,7 @@ private:
 
     }
 
-    void DrawFlatTopTriangle(const Vertex& v0, const Vertex& v1, const Vertex& v2)
+    void DrawFlatTopTriangle(const VSOut& v0, const VSOut & v1, const VSOut & v2)
     {
         const float deltaY = v2.pos.y - v0.pos.y;
         const auto dv0 = (v1 - v0) / deltaY;
@@ -143,7 +131,7 @@ private:
         DrawFlatTriangle(v0, v1, v2, dv0, dv1, itEdge1);
     }
 
-    void DrawFlatBottomTriangle(const Vertex& v0, const Vertex& v1, const Vertex& v2)
+    void DrawFlatBottomTriangle(const VSOut & v0, const VSOut & v1, const VSOut & v2)
     {
         const float deltaY = v2.pos.y - v0.pos.y;
         const auto dv0 = (v2 - v0) / deltaY;
@@ -155,12 +143,12 @@ private:
     }
 
     void DrawFlatTriangle(
-        const Vertex& v0,
-        const Vertex& v1,
-        const Vertex& v2,
-        const Vertex& dv0,
-        const Vertex& dv1,
-        Vertex itEdge1
+        const VSOut & v0,
+        const VSOut & v1,
+        const VSOut & v2,
+        const VSOut & dv0,
+        const VSOut & dv1,
+        VSOut itEdge1
     )
     {
         // create edge interpolant for left edge (always v0)
@@ -206,8 +194,6 @@ private:
     Graphics& gfx;
     PreClipScreenTransformer pst;
     ZBuffer zb;
-    Mat3 rotation = Mat3::Identity();
-    Vec3 translation = { 0, 0, 0 };
 };
 
 #endif //CHILI_RENDERER_GL_PIPELINE_H
