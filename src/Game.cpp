@@ -10,12 +10,14 @@
 #include "Scenes/DoubleCubeScene.h"
 #include "Scenes/VertexWaveScene.h"
 #include "Scenes/CubeVertexPositionColorScene.h"
+#include "Scenes/CubeSolidGeometryScene.h"
 
 using Button = Widgets::Controller::Button;
 
 
 Game::Game() : controller(GLFW_JOYSTICK_1)
 {
+    scenes.push_back(std::make_unique<CubeSolidGeometryScene>(gfx));
     scenes.push_back(std::make_unique<CubeVertexPositionColorScene>(gfx));
     scenes.push_back(std::make_unique<VertexWaveScene>(gfx));
     scenes.push_back(std::make_unique<CubeSkinnedScene>(gfx, "../images/dice_skin.png"));

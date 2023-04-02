@@ -34,7 +34,6 @@ public:
     void BeginFrame()
     {
         zb.Clear();
-        triangle_index = 0;
     }
 
 private:
@@ -58,12 +57,12 @@ private:
             bool isBackfaceCulled = (v1.pos - v0.pos).Cross(v2.pos - v0.pos) * v0.pos > 0.0f;
             if (!isBackfaceCulled)
             {
-                ProcessTriangle(v0, v1, v2);
+                ProcessTriangle(v0, v1, v2, i);
             }
         }
     }
 
-    void ProcessTriangle(const VSOut& v0, const VSOut & v1, const VSOut & v2)
+    void ProcessTriangle(const VSOut& v0, const VSOut & v1, const VSOut & v2, size_t triangle_index)
     {
         // geometry shader here
         PostProcessTriangleVertices(effect.gs(v0, v1, v2, triangle_index));
@@ -196,7 +195,6 @@ private:
     Graphics& gfx;
     PreClipScreenTransformer pst;
     ZBuffer zb;
-    unsigned int triangle_index;
 };
 
 #endif //CHILI_RENDERER_GL_PIPELINE_H
