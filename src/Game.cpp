@@ -15,7 +15,7 @@
 using Button = Widgets::Controller::Button;
 
 
-Game::Game() : controller(GLFW_JOYSTICK_1)
+Game::Game(GLFWwindow* window) : controller(GLFW_JOYSTICK_1), kbd(window)
 {
     scenes.push_back(std::make_unique<CubeSolidGeometryScene>(gfx));
     scenes.push_back(std::make_unique<CubeVertexPositionColorScene>(gfx));
@@ -41,6 +41,7 @@ void Game::UpdateModel()
     const float dt = frameTimer.Mark();
 
     controller.UpdateState();
+    keyboard.Update();
 
     if (!isSwitchingScene)
     {
@@ -55,7 +56,7 @@ void Game::UpdateModel()
         isSwitchingScene = false;
     }
 
-    (*currentScene)->Update(controller, dt);
+    (*currentScene)->Update(controller, keyboard, dt);
 }
 
 void Game::ComposeFrame()

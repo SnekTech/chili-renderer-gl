@@ -10,6 +10,7 @@
 
 #include "Widgets/FrameTimer.h"
 #include "Widgets/Controller.h"
+#include "Widgets/Keyboard.h"
 #include "Render/Graphics.h"
 #include "PreClipScreenTransformer.h"
 #include "Shapes/Cube.h"
@@ -18,7 +19,7 @@
 class Game
 {
 public:
-	Game();
+	explicit Game(GLFWwindow * window);
     Game(const Game& ) = delete;
     Game& operator=(const Game&) = delete;
     void Go();
@@ -33,6 +34,7 @@ private:
 private:
 	Graphics gfx;
     Widgets::Controller controller;
+    Widgets::Keyboard keyboard;
     FrameTimer frameTimer;
     bool isSwitchingScene = false;
 

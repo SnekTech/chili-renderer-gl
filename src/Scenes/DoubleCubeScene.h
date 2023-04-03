@@ -31,7 +31,7 @@ public:
 		}
 	}
 
-	void Update(const Widgets::Controller& controller, float deltaTime) override
+	void Update(const Widgets::Controller& controller, const Widgets::Keyboard& kbd, float deltaTime) override
 	{
 		using Button = Widgets::Controller::Button;
 

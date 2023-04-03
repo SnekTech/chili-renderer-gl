@@ -24,7 +24,7 @@ public:
         pipeline.effect.ps.BindTexture("../images/sauron-bhole-100x100.png");
     }
 
-    void Update(const Widgets::Controller& controller, float deltaTime) override
+    void Update(const Widgets::Controller& controller, const Widgets::Keyboard& kbd, float deltaTime) override
     {
         using Button = Widgets::Controller::Button;
 
