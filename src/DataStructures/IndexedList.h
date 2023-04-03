@@ -9,6 +9,7 @@
 #include <vector>
 #include "DataStructures/Vec3.h"
 #include "../external/tiny_obj_loader.h"
+#include "../external/Miniball.h"
 #include <fstream>
 #include <sstream>
 
@@ -107,6 +108,37 @@ struct IndexedTriangleList
         }
 
         return tl;
+    }
+
+    void AdjustToTrueCenter()
+    {
+        struct VertexAccessor
+        {
+            typedef std::vector<T>::const_iterator Pit;
+            typedef const float* Cit;
+
+            Cit operator()(Pit it) const
+            {
+                return &it->pos.x;
+            }
+        };
+
+        Miniball::Miniball<VertexAccessor> mb(3, vertices.begin(), vertices.end());
+        const auto pc = mb.center();
+        const Vec3 center = { *pc, *std::next(pc), *std::next(pc, 2) };
+
+        for (auto& v: vertices)
+        {
+            v.pos -= center;
+        }
+    }
+
+    float GetRadius() const
+    {
+        return std::max_element(vertices.begin(), vertices.end(), [](const T& v0, const T& v1)
+        {
+            return v0.pos.LenSq() < v1.pos.LenSq();
+        })->pos.Len();
     }
 
     std::vector<T> vertices;
