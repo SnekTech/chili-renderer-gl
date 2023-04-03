@@ -20,6 +20,8 @@ using Button = Widgets::Controller::Button;
 Game::Game(GLFWwindow* window) : controller(GLFW_JOYSTICK_1), keyboard(window)
 {
     scenes.push_back(std::make_unique<GeometryFlatScene>(gfx, Cube::GetPlain<GeometryFlatScene::Vertex>()));
+    scenes.push_back(std::make_unique<GeometryFlatScene>(gfx,
+        IndexedTriangleList<GeometryFlatScene::Vertex>::Load("../models/bunny.obj")));
     scenes.push_back(std::make_unique<CubeFlatIndependentScene>(gfx));
     scenes.push_back(std::make_unique<CubeSolidGeometryScene>(gfx));
     scenes.push_back(std::make_unique<CubeVertexPositionColorScene>(gfx));
@@ -27,7 +29,7 @@ Game::Game(GLFWwindow* window) : controller(GLFW_JOYSTICK_1), keyboard(window)
     scenes.push_back(std::make_unique<CubeSkinnedScene>(gfx, "../images/dice_skin.png"));
     scenes.push_back(std::make_unique<CubeVertexColorScene>(gfx));
     scenes.push_back(std::make_unique<CubeSolidScene>(gfx));
-	scenes.push_back(std::make_unique<DoubleCubeScene>(gfx));
+    scenes.push_back(std::make_unique<DoubleCubeScene>(gfx));
 
     currentScene = scenes.begin();
 }
