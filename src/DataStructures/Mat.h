@@ -18,6 +18,7 @@ class Matrix
 private:
 	using MatElements = std::array<std::array<T, Size>, Size>;
 public:
+    Matrix() = default;
 	explicit Matrix(const MatElements& elements)
 	{
 		int i = 0;

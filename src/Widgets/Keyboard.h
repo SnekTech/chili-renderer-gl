@@ -14,7 +14,6 @@ namespace Widgets
         explicit Keyboard(GLFWwindow* window);
         Keyboard(const Keyboard& other) = delete;
         Keyboard& operator=(const Keyboard& other) = delete;
-        void Update();
         [[nodiscard]] bool KeyIsPressed(int key) const;
     };
 }

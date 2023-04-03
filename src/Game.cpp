@@ -11,12 +11,14 @@
 #include "Scenes/VertexWaveScene.h"
 #include "Scenes/CubeVertexPositionColorScene.h"
 #include "Scenes/CubeSolidGeometryScene.h"
+#include "Scenes/CubeFlagIndependentScene.h"
 
 using Button = Widgets::Controller::Button;
 
 
-Game::Game(GLFWwindow* window) : controller(GLFW_JOYSTICK_1), kbd(window)
+Game::Game(GLFWwindow* window) : controller(GLFW_JOYSTICK_1), keyboard(window)
 {
+    scenes.push_back(std::make_unique<CubeFlatIndependentScene>(gfx));
     scenes.push_back(std::make_unique<CubeSolidGeometryScene>(gfx));
     scenes.push_back(std::make_unique<CubeVertexPositionColorScene>(gfx));
     scenes.push_back(std::make_unique<VertexWaveScene>(gfx));
@@ -41,7 +43,6 @@ void Game::UpdateModel()
     const float dt = frameTimer.Mark();
 
     controller.UpdateState();
-    keyboard.Update();
 
     if (!isSwitchingScene)
     {
