@@ -12,12 +12,14 @@
 #include "Scenes/CubeVertexPositionColorScene.h"
 #include "Scenes/CubeSolidGeometryScene.h"
 #include "Scenes/CubeFlagIndependentScene.h"
+#include "Scenes/GeometryFlatScene.h"
 
 using Button = Widgets::Controller::Button;
 
 
 Game::Game(GLFWwindow* window) : controller(GLFW_JOYSTICK_1), keyboard(window)
 {
+    scenes.push_back(std::make_unique<GeometryFlatScene>(gfx, Cube::GetPlain<GeometryFlatScene::Vertex>()));
     scenes.push_back(std::make_unique<CubeFlatIndependentScene>(gfx));
     scenes.push_back(std::make_unique<CubeSolidGeometryScene>(gfx));
     scenes.push_back(std::make_unique<CubeVertexPositionColorScene>(gfx));
