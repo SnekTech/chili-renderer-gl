@@ -121,7 +121,130 @@ public:
         float amplitude = 0.05f;
     };
 
-    typedef DefaultGeometryShader<VertexShader::Output> GeometryShader;
+    class GeometryShader
+    {
+    public:
+        class Output
+        {
+        public:
+            Output() = default;
+
+            explicit Output(const Vec3& pos)
+                : pos(pos)
+            {
+            }
+
+            Output(const Vec3& pos, const Output& src)
+                :
+                t(src.t),
+                l(src.l),
+                pos(pos)
+            {
+            }
+
+            Output(const Vec3& pos, const Vec2& t, float l)
+                :
+                t(t),
+                l(l),
+                pos(pos)
+            {
+            }
+
+            Output& operator+=(const Output& rhs)
+            {
+                pos += rhs.pos;
+                t += rhs.t;
+                return *this;
+            }
+
+            Output operator+(const Output& rhs) const
+            {
+                return Output(*this) += rhs;
+            }
+
+            Output operator-=(const Output& rhs)
+            {
+                pos -= rhs.pos;
+                t -= rhs.t;
+                return *this;
+            }
+
+            Output operator-(const Output& rhs) const
+            {
+                return Output(*this) -= rhs;
+            }
+
+
+            Output operator*=(float rhs)
+            {
+                pos *= rhs;
+                t *= rhs;
+                return *this;
+            }
+
+            Output operator*(float rhs) const
+            {
+                return Output(*this) *= rhs;
+            }
+
+            Output operator/=(float rhs)
+            {
+                pos /= rhs;
+                t /= rhs;
+                return *this;
+            }
+
+            Output operator/(float rhs) const
+            {
+                return Output(*this) /= rhs;
+            }
+
+        public:
+            Vec3 pos{};
+            Vec2 t{};
+            float l{};
+        };
+
+    public:
+        Triangle<Output> operator()(
+            const VertexShader::Output& in0,
+            const VertexShader::Output& in1,
+            const VertexShader::Output& in2,
+            size_t triangleIndex)
+        {
+            const auto n = ((in1.pos - in2.pos).Cross(in2.pos - in0.pos)).GetNormalized();
+            const auto l = std::min(1.0f, diffuse * std::max(0.0f, -n * dir) + ambient);
+            return
+                {
+                    { in0.pos, in0.t, l },
+                    { in1.pos, in1.t, l },
+                    { in2.pos, in2.t, l },
+                };
+        }
+
+        void SetDiffuseLight(float d)
+        {
+            diffuse = d;
+        }
+
+        void SetAmbientLight(float a)
+        {
+            ambient = a;
+        }
+
+        void SetLightDirection(const Vec3& direction)
+        {
+            assert(direction.LenSq() >= 0.001f);
+            dir = direction.GetNormalized();
+        }
+
+    private:
+        Mat3 rotation;
+        Vec3 translation;
+        Vec3 dir = { 0, 0, 0 };
+        float diffuse = 1;
+        float ambient = 0.15;
+    };
 
     class PixelShader
     {
@@ -131,7 +254,8 @@ public:
         {
             const auto x = (int)std::clamp(in.t.x * texWidth, 0.0f, texClampX);
             const auto y = (int)std::clamp(in.t.y * texHeight, 0.0f, texClampY);
-            return pTex->GetPixel(x, y);
+            const Vec3 color = Vec3(pTex->GetPixel(x, y));
+            return Color(color * in.l);
         }
 
         void BindTexture(const std::string& filename)
