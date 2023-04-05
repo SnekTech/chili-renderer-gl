@@ -4,6 +4,7 @@
 
 #include "Game.h"
 #include "Widgets/ChiliMath.h"
+#include "Shapes/Sphere.h"
 #include "Scenes/CubeSkinnedScene.h"
 #include "Scenes/CubeVertexColorScene.h"
 #include "Scenes/CubeSolidScene.h"
@@ -19,6 +20,7 @@ using Button = Widgets::Controller::Button;
 
 Game::Game(GLFWwindow* window) : controller(GLFW_JOYSTICK_1), keyboard(window)
 {
+    scenes.push_back(std::make_unique<GeometryFlatScene>(gfx, Sphere::GetPlain<GeometryFlatScene::Vertex>()));
     scenes.push_back(std::make_unique<VertexWaveScene>(gfx));
     scenes.push_back(std::make_unique<GeometryFlatScene>(gfx, Cube::GetPlain<GeometryFlatScene::Vertex>()));
     scenes.push_back(std::make_unique<GeometryFlatScene>(gfx,
