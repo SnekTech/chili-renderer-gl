@@ -6,20 +6,28 @@
 #include "DataStructures/Mat.h"
 #include "Render/Pipeline.h"
 #include "Effects/GouraudPointEffect.h"
+#include "Effects/SolidEffect.h"
 
 class GouraudPointScene : public Scene
 {
 public:
-    typedef Pipeline<GouraudPointEffect> Pipeline;
+    typedef ::Pipeline<GouraudPointEffect> Pipeline;
+    typedef ::Pipeline<SolidEffect> LightIndicatorPipeline;
     typedef Pipeline::Vertex Vertex;
 public:
     GouraudPointScene(Graphics& gfx, IndexedTriangleList<Vertex> tl)
         :
         itlist(std::move(tl)),
-        pipeline(gfx)
+        pipeline(gfx),
+        liPipeline(gfx)
     {
         itlist.AdjustToTrueCenter();
         offset_z = itlist.GetRadius() * 1.6f;
+
+        for (auto& v : lightIndicator.vertices)
+        {
+            v.color = Colors::White;
+        }
     }
 
     void Update(const Widgets::Controller& controller, const Widgets::Keyboard& kbd, float dt) override
@@ -98,11 +106,18 @@ public:
         pipeline.effect.vs.SetLightPosition({ lpos_x, lpos_y, lpos_z });
         // render triangles
         pipeline.Draw(itlist);
+
+        liPipeline.BeginFrame();
+        liPipeline.effect.vs.BindTranslation({lpos_x, lpos_y, lpos_z});
+        liPipeline.effect.vs.BindRotation(Mat3::Identity());
+        liPipeline.Draw(lightIndicator);
     }
 
 private:
     IndexedTriangleList<Vertex> itlist;
+    IndexedTriangleList<SolidEffect::Vertex> lightIndicator = Sphere::GetPlain<SolidEffect::Vertex>(0.05f);
     Pipeline pipeline;
+    LightIndicatorPipeline liPipeline;
     static constexpr float dTheta = PI;
     float offset_z = 2.0f;
     float theta_x = 0.0f;
