@@ -51,10 +51,19 @@ public:
 		return false;
 	}
 
-public:
-	const int width;
-	const int height;
+    [[nodiscard]] int GetWidth() const
+    {
+        return width;
+    }
+
+    [[nodiscard]] int GetHeight() const
+    {
+        return height;
+    }
+
 private:
+    int width;
+    int height;
 	std::unique_ptr<float[]> pBuffer;
 };
 

@@ -31,7 +31,7 @@ public:
     Pipeline(Graphics& gfx, std::shared_ptr<ZBuffer> pZb)
         : gfx(gfx), pZb(std::move(pZb))
     {
-        assert(this->pZb->height == gfx.ScreenHeight && this->pZb->width == gfx.ScreenWidth);
+        assert(this->pZb->GetHeight() == gfx.ScreenHeight && this->pZb->GetWidth() == gfx.ScreenWidth);
     }
 
     void Draw(IndexedTriangleList<Vertex>& triList)
