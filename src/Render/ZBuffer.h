@@ -51,9 +51,10 @@ public:
 		return false;
 	}
 
+public:
+	const int width;
+	const int height;
 private:
-	int width;
-	int height;
 	std::unique_ptr<float[]> pBuffer;
 };
 

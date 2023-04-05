@@ -6,6 +6,8 @@
 #define CHILI_RENDERER_GL_PIPELINE_H
 
 #include <algorithm>
+#include <memory>
+
 #include "Graphics.h"
 #include "DataStructures/IndexedList.h"
 #include "DataStructures/Mat.h"
@@ -22,8 +24,14 @@ public:
     typedef typename Effect::GeometryShader::Output GSOut;
 public:
     explicit Pipeline(Graphics& gfx)
-        : gfx(gfx), zb(Graphics::ScreenWidth, Graphics::ScreenHeight)
+        : Pipeline(gfx, std::make_shared<ZBuffer>(Graphics::ScreenWidth, Graphics::ScreenHeight))
     {
+    }
+
+    Pipeline(Graphics& gfx, std::shared_ptr<ZBuffer> pZb)
+        : gfx(gfx), pZb(std::move(pZb))
+    {
+        assert(this->pZb->height == gfx.ScreenHeight && this->pZb->width == gfx.ScreenWidth);
     }
 
     void Draw(IndexedTriangleList<Vertex>& triList)
@@ -33,7 +41,7 @@ public:
 
     void BeginFrame()
     {
-        zb.Clear();
+        pZb->Clear();
     }
 
 private:
@@ -62,7 +70,7 @@ private:
         }
     }
 
-    void ProcessTriangle(const VSOut& v0, const VSOut & v1, const VSOut & v2, size_t triangle_index)
+    void ProcessTriangle(const VSOut& v0, const VSOut& v1, const VSOut& v2, size_t triangle_index)
     {
         // geometry shader here
         PostProcessTriangleVertices(effect.gs(v0, v1, v2, triangle_index));
@@ -121,7 +129,7 @@ private:
 
     }
 
-    void DrawFlatTopTriangle(const GSOut & v0, const GSOut & v1, const GSOut & v2)
+    void DrawFlatTopTriangle(const GSOut& v0, const GSOut& v1, const GSOut& v2)
     {
         const float deltaY = v2.pos.y - v0.pos.y;
         const auto dv0 = (v1 - v0) / deltaY;
@@ -132,7 +140,7 @@ private:
         DrawFlatTriangle(v0, v1, v2, dv0, dv1, itEdge1);
     }
 
-    void DrawFlatBottomTriangle(const GSOut & v0, const GSOut & v1, const GSOut & v2)
+    void DrawFlatBottomTriangle(const GSOut& v0, const GSOut& v1, const GSOut& v2)
     {
         const float deltaY = v2.pos.y - v0.pos.y;
         const auto dv0 = (v2 - v0) / deltaY;
@@ -144,11 +152,11 @@ private:
     }
 
     void DrawFlatTriangle(
-        const GSOut & v0,
-        const GSOut & v1,
-        const GSOut & v2,
-        const GSOut & dv0,
-        const GSOut & dv1,
+        const GSOut& v0,
+        const GSOut& v1,
+        const GSOut& v2,
+        const GSOut& dv0,
+        const GSOut& dv1,
         GSOut itEdge1
     )
     {
@@ -179,7 +187,7 @@ private:
             for (int x = xStart; x < xEnd; x++, iLine += diLine)
             {
                 const float z = 1.0f / iLine.pos.z;
-                if (zb.TestAndSet(x, y, z))
+                if (pZb->TestAndSet(x, y, z))
                 {
                     const auto attr = iLine * z;
                     gfx.PutPixel(x, y, effect.ps(attr));
@@ -194,7 +202,7 @@ public:
 private:
     Graphics& gfx;
     PreClipScreenTransformer pst;
-    ZBuffer zb;
+    std::shared_ptr<ZBuffer> pZb;
 };
 
 #endif //CHILI_RENDERER_GL_PIPELINE_H

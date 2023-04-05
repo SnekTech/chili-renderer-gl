@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 
 #include "Scene.h"
 #include "Shapes/Cube.h"
@@ -18,13 +17,14 @@ public:
     GouraudPointScene(Graphics& gfx, IndexedTriangleList<Vertex> tl)
         :
         itlist(std::move(tl)),
-        pipeline(gfx),
-        liPipeline(gfx)
+        pZb(std::make_shared<ZBuffer>(Graphics::ScreenWidth, Graphics::ScreenHeight)),
+        pipeline(gfx, pZb),
+        liPipeline(gfx, pZb)
     {
         itlist.AdjustToTrueCenter();
         offset_z = itlist.GetRadius() * 1.6f;
 
-        for (auto& v : lightIndicator.vertices)
+        for (auto& v: lightIndicator.vertices)
         {
             v.color = Colors::White;
         }
@@ -107,8 +107,7 @@ public:
         // render triangles
         pipeline.Draw(itlist);
 
-        liPipeline.BeginFrame();
-        liPipeline.effect.vs.BindTranslation({lpos_x, lpos_y, lpos_z});
+        liPipeline.effect.vs.BindTranslation({ lpos_x, lpos_y, lpos_z });
         liPipeline.effect.vs.BindRotation(Mat3::Identity());
         liPipeline.Draw(lightIndicator);
     }
@@ -116,6 +115,7 @@ public:
 private:
     IndexedTriangleList<Vertex> itlist;
     IndexedTriangleList<SolidEffect::Vertex> lightIndicator = Sphere::GetPlain<SolidEffect::Vertex>(0.05f);
+    std::shared_ptr<ZBuffer> pZb;
     Pipeline pipeline;
     LightIndicatorPipeline liPipeline;
     static constexpr float dTheta = PI;
