@@ -15,12 +15,14 @@
 #include "Scenes/CubeFlagIndependentScene.h"
 #include "Scenes/GeometryFlatScene.h"
 #include "Scenes/GouraudScene.h"
+#include "Scenes/GouraudPointScene.h"
 
 using Button = Widgets::Controller::Button;
 
 
 Game::Game(GLFWwindow* window) : controller(GLFW_JOYSTICK_1), keyboard(window)
 {
+    scenes.push_back(std::make_unique<GouraudPointScene>(gfx, IndexedTriangleList<GouraudPointScene::Vertex>::LoadNormals("../models/suzanne.obj")));
     scenes.push_back(std::make_unique<GouraudScene>(gfx, IndexedTriangleList<GouraudEffect::Vertex>::LoadNormals("../models/suzanne.obj")));
     scenes.push_back(std::make_unique<GouraudScene>(gfx, Sphere::GetPlainNormals<GouraudScene::Vertex>()));
     scenes.push_back(std::make_unique<GeometryFlatScene>(gfx, Sphere::GetPlain<GeometryFlatScene::Vertex>()));
