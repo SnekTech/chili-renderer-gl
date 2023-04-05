@@ -37,7 +37,6 @@ public:
         Vertex& operator+=(const Vertex& rhs)
         {
             pos += rhs.pos;
-            n += rhs.n;
             return *this;
         }
 
@@ -49,7 +48,6 @@ public:
         Vertex& operator-=(const Vertex& rhs)
         {
             pos -= rhs.pos;
-            n -= rhs.n;
             return *this;
         }
 
@@ -61,7 +59,6 @@ public:
         Vertex& operator*=(float rhs)
         {
             pos *= rhs;
-            n *= rhs;
             return *this;
         }
 
@@ -73,7 +70,6 @@ public:
         Vertex& operator/=(float rhs)
         {
             pos /= rhs;
-            n /= rhs;
             return *this;
         }
 
