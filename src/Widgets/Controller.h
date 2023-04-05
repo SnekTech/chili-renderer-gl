@@ -37,10 +37,19 @@ namespace Widgets
     public:
         explicit Controller(int joystickId)
             :
-            id(joystickId),
-            name(glfwGetGamepadName(joystickId))
+            id(joystickId)
         {
-            std::cout << "Controller discovered: " << name << std::endl;
+            auto gamepadName = glfwGetGamepadName(joystickId);
+            if (gamepadName)
+            {
+                name = gamepadName;
+                std::cout << "Controller discovered: " << name << std::endl;
+            }
+            else
+            {
+                std::cerr << "Controller not found " << name << std::endl;
+            }
+
         }
         Controller(const Controller& rhs) = delete;
         Controller& operator=(const Controller& rhs) = delete;
