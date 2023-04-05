@@ -6,3 +6,5 @@
 
 ![flat-shading-wave](screenshots/flat-shading-wave.png)
 
+![per-pixel-shading](screenshots/per-pixel-shading.png)
+
