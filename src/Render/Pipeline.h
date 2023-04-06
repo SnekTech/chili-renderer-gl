@@ -62,7 +62,10 @@ private:
             const auto& v1 = vertices[indices[i * 3 + 1]];
             const auto& v2 = vertices[indices[i * 3 + 2]];
 
-            bool isBackfaceCulled = (v1.pos - v0.pos).Cross(v2.pos - v0.pos) * v0.pos > 0.0f;
+            Vec3 pos0 = v0.pos;
+            Vec3 pos1 = v1.pos;
+            Vec3 pos2 = v2.pos;
+            bool isBackfaceCulled = (pos1 - pos0).Cross(pos2 - pos0) * pos0 > 0.0f;
             if (!isBackfaceCulled)
             {
                 ProcessTriangle(v0, v1, v2, i);

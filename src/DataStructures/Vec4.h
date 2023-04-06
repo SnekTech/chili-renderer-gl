@@ -49,6 +49,11 @@ public:
         return { (T2)x, (T2)y, (T2)z, (T2)w };
     }
 
+    operator Vector3<T>() const
+    {
+        return {x,y,z};
+    }
+
     //T		LenSq() const
     //{
     //	return sq( *this );
@@ -71,10 +76,6 @@ public:
     //	norm.Normalize();
     //	return norm;
     //}
-    Vector4 operator-() const
-    {
-        return Vector4(-x, -y, -z, -w);
-    }
 
     Vector4& operator=(const Vector4& rhs)
     {

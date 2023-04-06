@@ -48,13 +48,13 @@ public:
         public:
             Output() = default;
 
-            explicit Output(const Vec3& pos)
+            explicit Output(const Vec4& pos)
                 :
                 pos(pos)
             {
             }
 
-            Output(const Vec3& pos, const Output& src)
+            Output(const Vec4& pos, const Output& src)
                 :
                 pos(pos),
                 n(src.n),
@@ -62,7 +62,7 @@ public:
             {
             }
 
-            Output(const Vec3& pos, const Vec3& n, const Vec3& worldPos)
+            Output(const Vec4& pos, const Vec4& n, const Vec3& worldPos)
                 :
                 pos(pos),
                 n(n),
@@ -123,31 +123,26 @@ public:
             }
 
         public:
-            Vec3 pos{};
-            Vec3 n{};
+            Vec4 pos{};
+            Vec4 n{};
             Vec3 worldPos{};
         };
 
     public:
-        void BindRotation(const Mat3& rotation_in)
+        void BindTransformation(const Mat4& transformationIn)
         {
-            rotation = rotation_in;
-        }
-
-        void BindTranslation(const Vec3& translation_in)
-        {
-            translation = translation_in;
+            transformation = transformationIn;
         }
 
         Output operator()(const Vertex& v) const
         {
-            const auto pos = v.pos * rotation + translation;
-            return { pos, v.n * rotation, pos };
+            const auto positionTransformed = Vec4(v.pos) * transformation;
+            const auto normalTransformed = Vec4(v.n, 0.0f) * transformation;
+            return { positionTransformed, normalTransformed, positionTransformed };
         }
 
     private:
-        Mat3 rotation;
-        Vec3 translation;
+        Mat4 transformation;
     };
 
     // default gs passes vertices through and outputs triangle
@@ -163,7 +158,8 @@ public:
         template<class Input>
         Color operator()(const Input& in) const
         {
-            const auto surfaceN = in.n.GetNormalized();
+            const Vec3 raw = in.n;
+            const auto surfaceN = raw.GetNormalized();
             const auto v_to_l = light_pos - in.worldPos;
             const auto distance = v_to_l.Len();
             const auto dir = v_to_l / distance;
@@ -171,7 +167,7 @@ public:
             const auto attenuation = 1.0f /
                                      (constant_attenuation + linear_attenuation * distance +
                                       quadratic_attenuation * sq(distance));
-            const auto diffuse = light_diffuse * attenuation * std::max(0.0f, in.n.GetNormalized() * dir);
+            const auto diffuse = light_diffuse * attenuation * std::max(0.0f, surfaceN * dir);
 
             const auto w = surfaceN * (v_to_l * surfaceN);
             const auto r = w * 2.0f - v_to_l;

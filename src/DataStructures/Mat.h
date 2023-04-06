@@ -171,7 +171,7 @@ public:
                 0.0f, 0.0f, 1.0f, 0,
                 0.0f, 0.0f, 0.0f, 1.0f,
             };
-            return raw;
+            return MatrixImpl(raw);
         }
 
         throw std::runtime_error("bad matrix dimensionality");
@@ -199,9 +199,9 @@ public:
                     cosTheta, 0.0f, -sinTheta, 0.0f,
                     0.0f, 1.0f, 0.0f, 0.0f,
                     sinTheta, 0.0f, cosTheta, 0.0f,
-                    0.0f, 0.0f, 0.0f, 0.0f,
+                    0.0f, 0.0f, 0.0f, 1.0f,
                 };
-            return raw;
+            return MatrixImpl(raw);
         }
 
         throw std::runtime_error("bad matrix dimensionality");
@@ -246,12 +246,16 @@ public:
     static MatrixImpl Translation(T x, T y, T z)
     {
         if constexpr (Size == 4)
-            return MatrixImpl({
+        {
+            MatElements raw = {
                 1.0f, 0.0f, 0.0f, 0.0f,
                 0.0f, 1.0f, 0.0f, 0.0f,
                 0.0f, 0.0f, 1.0f, 0.0f,
                 x, y, z, 1.0f,
-            });
+            };
+            return MatrixImpl(raw);
+        }
+
 
         throw std::runtime_error("bad matrix dimensionality");
     }
