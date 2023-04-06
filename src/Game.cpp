@@ -17,12 +17,14 @@
 #include "Scenes/GouraudScene.h"
 #include "Scenes/GouraudPointScene.h"
 #include "Scenes/PhongPointScene.h"
+#include "Scenes/SpecularPhongPointScene.h"
 
 using Button = Widgets::Controller::Button;
 
 
 Game::Game(GLFWwindow* window) : controller(GLFW_JOYSTICK_1), keyboard(window)
 {
+    scenes.push_back(std::make_unique<SpecularPhongPointScene>(gfx, IndexedTriangleList<SpecularPhongPointEffect::Vertex>::LoadNormals("../models/suzanne.obj")));
     scenes.push_back(std::make_unique<PhongPointScene>(gfx, IndexedTriangleList<PhongPointScene::Vertex>::LoadNormals("../models/suzanne.obj")));
     scenes.push_back(std::make_unique<PhongPointScene>(gfx, Plane::GetNormals<PhongPointScene::Vertex>(1)));
     scenes.push_back(std::make_unique<GouraudPointScene>(gfx, IndexedTriangleList<GouraudPointScene::Vertex>::LoadNormals("../models/suzanne.obj")));

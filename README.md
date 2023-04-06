@@ -8,3 +8,4 @@
 
 ![per-pixel-shading](screenshots/per-pixel-shading.png)
 
+![](screenshots/specular.gif)
