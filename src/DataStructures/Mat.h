@@ -267,6 +267,26 @@ public:
         throw std::runtime_error("bad matrix dimensionality");
     }
 
+    constexpr static MatrixImpl ProjectionHFOV(T fov, T aspectRatio, T n, T f)
+    {
+        if constexpr (Size == 4)
+        {
+            const auto fov_rad = fov * PI / 180.0f;
+            const auto w = 1.0f / std::tan(fov_rad / 2.0f);
+            const auto h = w * aspectRatio;
+
+            MatElements raw = {
+                w, 0.0f, 0.0f, 0.0f,
+                0.0f, h, 0.0f, 0.0f,
+                0.0f, 0.0f, f / (f - n), 1.0f,
+                0.0f, 0.0f, -n * f / (f - n), 0.0f,
+            };
+            return MatrixImpl(raw);
+        }
+
+        throw std::runtime_error("bad matrix dimensionality");
+    }
+
 public:
     MatElements Elements;
 };

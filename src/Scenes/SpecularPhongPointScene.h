@@ -95,7 +95,7 @@ public:
     {
         pipeline.BeginFrame();
 
-        const auto proj = Mat4 ::Projection(2.66666f, 2.0f, 1.0f, 10.0f);
+        const auto proj = Mat4::ProjectionHFOV(100.0f, 1.33333f, 1.0f, 10.0f);
         pipeline.effect.vs.BindWorld(
             Mat4::RotationX(theta_x) *
             Mat4::RotationY(theta_y) *
@@ -107,7 +107,7 @@ public:
         // render triangles
         pipeline.Draw(itlist);
 
-        liPipeline.effect.vs.BindWorld(Mat4::Translation( lpos_x, lpos_y, lpos_z ));
+        liPipeline.effect.vs.BindWorld(Mat4::Translation(lpos_x, lpos_y, lpos_z));
         liPipeline.effect.vs.BindProjection(proj);
         liPipeline.Draw(lightIndicator);
     }
