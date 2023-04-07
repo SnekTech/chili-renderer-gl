@@ -56,6 +56,7 @@ private:
 
     void AssembleTriangles(const std::vector<VSOut>& vertices, const std::vector<size_t>& indices)
     {
+        const auto eyePos = Vec4 {0.0f, 0.0f, 0.0f, 1.0f} * effect.vs.GetProj();
         for (size_t i = 0, end = indices.size() / 3; i < end; i++)
         {
             const auto& v0 = vertices[indices[i * 3]];
@@ -65,7 +66,7 @@ private:
             Vec3 pos0 = v0.pos;
             Vec3 pos1 = v1.pos;
             Vec3 pos2 = v2.pos;
-            bool isBackfaceCulled = (pos1 - pos0).Cross(pos2 - pos0) * pos0 > 0.0f;
+            bool isBackfaceCulled = (pos1 - pos0).Cross(pos2 - pos0) * Vec3(pos0 - eyePos) > 0.0f;
             if (!isBackfaceCulled)
             {
                 ProcessTriangle(v0, v1, v2, i);
