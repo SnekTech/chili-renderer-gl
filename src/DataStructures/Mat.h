@@ -84,25 +84,17 @@ public:
         return xp;
     }
 
-    static MatrixImpl Identity()
+    constexpr static MatrixImpl Identity()
     {
         MatElements identity;
 
-        if constexpr (Size == 2)
-        {
-            identity = {
-                1, 0,
-                0, 1
-            };
-            return MatrixImpl(identity);
-        }
         if constexpr (Size == 3)
         {
             identity =
                 {
-                    1.0f, 0.0, 0.0,
+                    1.0f, 0.0f, 0.0f,
                     0.0f, 1.0f, 0.0f,
-                    0.0f, 0.0f, 1.0f
+                    0.0f, 0.0f, 1.0f,
                 };
             return MatrixImpl(identity);
         }
@@ -112,7 +104,7 @@ public:
                 1, 0, 0, 0,
                 0, 1, 0, 0,
                 0, 0, 1, 0,
-                0, 0, 0, 1
+                0, 0, 0, 1,
             };
             return MatrixImpl(identity);
         }
@@ -120,7 +112,7 @@ public:
         throw std::runtime_error("bad matrix dimensionality");
     }
 
-    static MatrixImpl Scaling(T factor)
+    constexpr static MatrixImpl Scaling(T factor)
     {
         MatElements identity;
 
@@ -130,7 +122,7 @@ public:
                 {
                     factor, 0.0f, 0.0f,
                     0.0f, factor, 0.0f,
-                    0.0f, 0.0f, factor
+                    0.0f, 0.0f, factor,
                 };
             return MatrixImpl(identity);
         }
@@ -140,7 +132,7 @@ public:
                 factor, 0.0f, 0.0f, 0.0f,
                 0.0f, factor, 0.0f, 0.0f,
                 0.0f, 0.0f, factor, 0.0f,
-                0.0f, 0.0f, 0.0f, 1.0f
+                0.0f, 0.0f, 0.0f, 1.0f,
             };
             return MatrixImpl(identity);
         }
@@ -238,12 +230,12 @@ public:
     }
 
     template<class V>
-    static MatrixImpl Translation(const V& translation)
+    constexpr static MatrixImpl Translation(const V& translation)
     {
         return Translation(translation.x, translation.y, translation.z);
     }
 
-    static MatrixImpl Translation(T x, T y, T z)
+    constexpr static MatrixImpl Translation(T x, T y, T z)
     {
         if constexpr (Size == 4)
         {
@@ -256,6 +248,21 @@ public:
             return MatrixImpl(raw);
         }
 
+        throw std::runtime_error("bad matrix dimensionality");
+    }
+
+    constexpr static MatrixImpl Projection(T w, T h, T n, T f)
+    {
+        if constexpr (Size == 4)
+        {
+            MatElements raw = {
+                2.0f * n / w, 0.0f, 0.0f, 0.0f,
+                0.0f, 2.0f * n / h, 0.0f, 0.0f,
+                0.0f, 0.0f, f / (f - n), 1.0f,
+                0.0f, 0.0f, -n * f / (f - n), 0.0f,
+            };
+            return MatrixImpl(raw);
+        }
 
         throw std::runtime_error("bad matrix dimensionality");
     }

@@ -12,7 +12,7 @@
 #include "DataStructures/IndexedList.h"
 #include "DataStructures/Mat.h"
 #include "DataStructures/Triangle.h"
-#include "PreClipScreenTransformer.h"
+#include "NDCScreenTransformer.h"
 #include "ZBuffer.h"
 
 template<class Effect>
@@ -189,10 +189,10 @@ private:
 
             for (int x = xStart; x < xEnd; x++, iLine += diLine)
             {
-                const float z = 1.0f / iLine.pos.z;
-                if (pZb->TestAndSet(x, y, z))
+                if (pZb->TestAndSet(x, y, iLine.pos.z))
                 {
-                    const auto attr = iLine * z;
+                    const float w = 1.0f / iLine.pos.w;
+                    const auto attr = iLine * w;
                     gfx.PutPixel(x, y, effect.ps(attr));
                 }
             }
@@ -204,7 +204,7 @@ public:
     Effect effect;
 private:
     Graphics& gfx;
-    PreClipScreenTransformer pst;
+    NDCScreenTransformer pst;
     std::shared_ptr<ZBuffer> pZb;
 };
 

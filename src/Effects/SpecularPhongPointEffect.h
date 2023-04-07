@@ -129,20 +129,33 @@ public:
         };
 
     public:
-        void BindTransformation(const Mat4& transformationIn)
+        void BindWorld(const Mat4& transformation_in)
         {
-            transformation = transformationIn;
+            world = transformation_in;
+            worldProj = world * proj;
+        }
+
+        void BindProjection(const Mat4& projection)
+        {
+            proj = projection;
+            worldProj = world * proj;
+        }
+
+        [[nodiscard]] const Mat4& GetProj() const
+        {
+            return proj;
         }
 
         Output operator()(const Vertex& v) const
         {
-            const auto positionTransformed = Vec4(v.pos) * transformation;
-            const auto normalTransformed = Vec4(v.n, 0.0f) * transformation;
-            return { positionTransformed, normalTransformed, positionTransformed };
+            const auto p4 = Vec4 (v.pos);
+            return {p4 * worldProj, Vec4(v.n, 0.0f) * world, p4 * world };
         }
 
     private:
-        Mat4 transformation;
+        Mat4 world = Mat4::Identity();
+        Mat4 proj = Mat4::Identity();
+        Mat4 worldProj = Mat4::Identity();
     };
 
     // default gs passes vertices through and outputs triangle

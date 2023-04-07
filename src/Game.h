@@ -12,7 +12,7 @@
 #include "Widgets/Controller.h"
 #include "Widgets/Keyboard.h"
 #include "Render/Graphics.h"
-#include "PreClipScreenTransformer.h"
+#include "Render/NDCScreenTransformer.h"
 #include "Shapes/Cube.h"
 #include "Scenes/Scene.h"
 

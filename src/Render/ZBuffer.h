@@ -7,6 +7,7 @@
 
 #include <limits>
 #include <memory>
+#include <algorithm>
 
 class ZBuffer
 {
@@ -59,6 +60,11 @@ public:
     [[nodiscard]] int GetHeight() const
     {
         return height;
+    }
+
+    [[nodiscard]] auto GetMinMax() const
+    {
+        return std::minmax_element(pBuffer.get(), pBuffer.get() + width * height);
     }
 
 private:

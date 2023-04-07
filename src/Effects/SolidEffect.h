@@ -81,7 +81,104 @@ public:
         Color color;
     };
 
-    typedef DefaultVertexShader<Vertex> VertexShader;
+    class VertexShader
+    {
+    public:
+        struct Output
+        {
+            Vec4 pos{};
+            Color color;
+
+            Output() = default;
+
+            explicit Output(const Vec4& pos)
+                : pos(pos)
+            {
+            }
+
+            Output(const Vec4& pos, const Vertex& src)
+                : pos(pos), color(src.color)
+            {
+            }
+
+            Output(const Vec4& pos, Color color)
+                : pos(pos), color(color)
+            {
+            }
+
+            Output& operator+=(const Output& rhs)
+            {
+                pos += rhs.pos;
+                return *this;
+            }
+
+            Output operator+(const Output& rhs) const
+            {
+                return Output(*this) += rhs;
+            }
+
+            Output& operator-=(const Output& rhs)
+            {
+                pos -= rhs.pos;
+                return *this;
+            }
+
+            Output operator-(const Output& rhs) const
+            {
+                return Output(*this) -= rhs;
+            }
+
+            Output& operator*=(float rhs)
+            {
+                pos *= rhs;
+                return *this;
+            }
+
+            Output operator*(float rhs) const
+            {
+                return Output(*this) *= rhs;
+            }
+
+            Output& operator/=(float rhs)
+            {
+                pos /= rhs;
+                return *this;
+            }
+
+            Output operator/(float rhs) const
+            {
+                return Output(*this) /= rhs;
+            }
+        };
+
+    public:
+        void BindWorld(const Mat4& transformation_in)
+        {
+            world = transformation_in;
+            worldProj = world * proj;
+        }
+
+        void BindProjection(const Mat4& projectionMatrix)
+        {
+            proj = projectionMatrix;
+            worldProj = world * proj;
+        }
+
+        [[nodiscard]] const Mat4& GetProj() const
+        {
+            return proj;
+        }
+
+        Output operator()(const Vertex& v) const
+        {
+            return { Vec4(v.pos) * worldProj, v.color };
+        }
+
+    private:
+        Mat4 world = Mat4::Identity();
+        Mat4 proj = Mat4::Identity();
+        Mat4 worldProj = Mat4::Identity();
+    };
 
     typedef DefaultGeometryShader<VertexShader::Output> GeometryShader;
 

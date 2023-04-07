@@ -95,18 +95,20 @@ public:
     {
         pipeline.BeginFrame();
 
-        pipeline.effect.vs.BindTransformation(
+        const auto proj = Mat4 ::Projection(2.0f, 2.0f, 1.0f, 10.0f);
+        pipeline.effect.vs.BindWorld(
             Mat4::RotationX(theta_x) *
             Mat4::RotationY(theta_y) *
             Mat4::RotationZ(theta_z) *
             Mat4::Translation(0.0f, 0.0f, offset_z)
         );
+        pipeline.effect.vs.BindProjection(proj);
         pipeline.effect.ps.SetLightPosition({ lpos_x, lpos_y, lpos_z });
         // render triangles
         pipeline.Draw(itlist);
 
-        liPipeline.effect.vs.BindTranslation({ lpos_x, lpos_y, lpos_z });
-        liPipeline.effect.vs.BindRotation(Mat3::Identity());
+        liPipeline.effect.vs.BindWorld(Mat4::Translation( lpos_x, lpos_y, lpos_z ));
+        liPipeline.effect.vs.BindProjection(proj);
         liPipeline.Draw(lightIndicator);
     }
 

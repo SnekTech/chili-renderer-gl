@@ -1,17 +1,15 @@
 //
 // Created by syf on 2023/3/10.
 //
-
-#ifndef CHILI_RENDERER_GL_PRECLIPSCREENTRANSFORMER_H
-#define CHILI_RENDERER_GL_PRECLIPSCREENTRANSFORMER_H
+#pragma once
 
 #include "DataStructures/Vec3.h"
 #include "Render/Graphics.h"
 
-class PreClipScreenTransformer
+class NDCScreenTransformer
 {
 public:
-	PreClipScreenTransformer()
+	NDCScreenTransformer()
 		:
 		xFactor(Graphics::ScreenWidth / 2.0f),
 		yFactor(Graphics::ScreenHeight / 2.0f)
@@ -20,11 +18,17 @@ public:
 	template<class Vertex>
 	Vertex& Transform(Vertex& v) const
 	{
-        float zInv =  1.0f / v.pos.z;
-		v *= zInv;
+        // homo-space -> ndc on xyz
+        // perspective divide on all attributes
+        float wInv = 1.0f / v.pos.w;
+        v *= wInv;
+
+        // ndc -> screen 2d
 		v.pos.x = (v.pos.x + 1.0f) * xFactor;
 		v.pos.y = (v.pos.y + 1.0f) * yFactor;
-		v.pos.z = zInv;
+
+        // for recovering the attributes after interpolation
+		v.pos.w = wInv;
 
 		return v;
 	}
@@ -39,5 +43,3 @@ private:
 	float xFactor;
 	float yFactor;
 };
-
-#endif //CHILI_RENDERER_GL_PRECLIPSCREENTRANSFORMER_H
