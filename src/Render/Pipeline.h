@@ -81,14 +81,24 @@ private:
 
     void ClipCullTriangle(const Triangle<GSOut>& t)
     {
-        if (abs(t.v0.pos.x) > t.v0.pos.w &&
-            abs(t.v1.pos.x) > t.v1.pos.w &&
-            abs(t.v2.pos.x) > t.v2.pos.w)
+        if (t.v0.pos.x > t.v0.pos.w &&
+            t.v1.pos.x > t.v1.pos.w &&
+            t.v2.pos.x > t.v2.pos.w)
             return;
 
-        if (abs(t.v0.pos.y) > t.v0.pos.w &&
-            abs(t.v1.pos.y) > t.v1.pos.w &&
-            abs(t.v2.pos.y) > t.v2.pos.w)
+        if (t.v0.pos.x < -t.v0.pos.w &&
+            t.v1.pos.x < -t.v1.pos.w &&
+            t.v2.pos.x < -t.v2.pos.w)
+            return;
+
+        if (t.v0.pos.y > t.v0.pos.w &&
+            t.v1.pos.y > t.v1.pos.w &&
+            t.v2.pos.y > t.v2.pos.w)
+            return;
+
+        if (t.v0.pos.y < -t.v0.pos.w &&
+            t.v1.pos.y < -t.v1.pos.w &&
+            t.v2.pos.y < -t.v2.pos.w)
             return;
 
         if (t.v0.pos.z > t.v0.pos.w &&
