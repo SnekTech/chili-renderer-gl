@@ -2,8 +2,7 @@
 // Created by syf on 2023/3/19.
 //
 
-#ifndef CHILI_RENDERER_GL_PIPELINE_H
-#define CHILI_RENDERER_GL_PIPELINE_H
+#pragma once
 
 #include <algorithm>
 #include <memory>
@@ -236,8 +235,8 @@ private:
         auto itEdge0 = v0;
 
         // calculate start and end scanlines
-        const int yStart = (int)ceilf(v0.pos.y - 0.5f);
-        const int yEnd = (int)ceilf(v2.pos.y - 0.5f);
+        const int yStart = std::max((int)ceilf(v0.pos.y - 0.5f), 0);
+        const int yEnd = std::min((int)ceilf(v2.pos.y - 0.5f), (int)Graphics::ScreenHeight - 1);
 
         // do interpolant preStep
         itEdge0 += dv0 * (float(yStart) + 0.5f - v0.pos.y);
@@ -246,8 +245,8 @@ private:
         for (int y = yStart; y < yEnd; y++, itEdge0 += dv0, itEdge1 += dv1)
         {
             // calculate start and end pixel
-            const int xStart = (int)ceilf(itEdge0.pos.x - 0.5f);
-            const int xEnd = (int)ceilf(itEdge1.pos.x - 0.5f);
+            const int xStart = std::max((int)ceilf(itEdge0.pos.x - 0.5f), 0);
+            const int xEnd = std::min((int)ceilf(itEdge1.pos.x - 0.5f), (int)Graphics::ScreenWidth - 1);
 
             auto iLine = itEdge0;
             const float dx = itEdge1.pos.x - itEdge0.pos.x;
@@ -276,5 +275,3 @@ private:
     NDCScreenTransformer pst;
     std::shared_ptr<ZBuffer> pZb;
 };
-
-#endif //CHILI_RENDERER_GL_PIPELINE_H
